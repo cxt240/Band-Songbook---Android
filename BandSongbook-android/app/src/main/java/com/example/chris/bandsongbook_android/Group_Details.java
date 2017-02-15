@@ -1,5 +1,6 @@
 package com.example.chris.bandsongbook_android;
 
+import android.app.ActionBar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,8 @@ import android.view.View;
 
 public class Group_Details extends AppCompatActivity {
 
+    String GroupName;
+    Boolean Admin;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -36,8 +39,14 @@ public class Group_Details extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle field = getIntent().getExtras();
+        GroupName = field.getString("Group Name");
+        Admin = field.getBoolean("Admin");
+
         setContentView(R.layout.activity_group__details);
 
+        getSupportActionBar().setTitle("Group " + GroupName + " Details");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -57,6 +66,10 @@ public class Group_Details extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        if(!Admin) {
+            fab.setVisibility(View.INVISIBLE);
+        }
 
     }
 
