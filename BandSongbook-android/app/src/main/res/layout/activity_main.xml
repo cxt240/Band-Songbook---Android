@@ -1,0 +1,62 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    android:padding="40dp"
+    tools:context="com.example.chris.bandsongbook_android.Main">
+
+    <TextView
+        android:text="@string/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/AppTitle"
+        android:textSize="36sp"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:text="@string/create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:id="@+id/create" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <EditText
+            android:hint="@string/user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@null"
+            android:id="@+id/Name"
+            android:textSize="36sp"
+            android:textColor="@android:color/white"
+            android:textAlignment="center"
+            android:inputType="textNoSuggestions" />
+
+        <EditText
+            android:hint="@string/enter_group_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@null"
+            android:id="@+id/Code"
+            android:textSize="36sp"
+            android:textColor="@android:color/white"
+            android:textAlignment="center"
+            android:inputType="textNoSuggestions" />
+
+        <Button
+            android:text="@string/group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/join" />
+    </LinearLayout>
+</FrameLayout>

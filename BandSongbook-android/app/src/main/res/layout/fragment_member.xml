@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true"
+        tools:context="com.example.chris.bandsongbook_android.Member">
+
+        <ListView
+            android:id="@+id/member_list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+        </ListView>
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
