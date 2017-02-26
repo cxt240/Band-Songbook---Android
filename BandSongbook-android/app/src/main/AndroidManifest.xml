@@ -24,15 +24,16 @@
             android:name=".Create_Group"
             android:label="@string/title_activity_create__group"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".Group_Details"
             android:label="@string/details"
-            android:theme="@style/AppTheme"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:theme="@style/AppTheme" />
+
+
+        <activity
+            android:name=".Play"
+            android:label="@string/Song"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

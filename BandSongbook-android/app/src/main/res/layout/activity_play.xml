@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_play"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.chris.bandsongbook_android.Play">
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_media_rew"
+        android:id="@+id/rewind"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        app:backgroundTint="@android:color/white"
+        android:tint="@color/black" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_media_pause"
+        android:id="@+id/pause"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/rewind"
+        android:layout_toEndOf="@+id/rewind"
+        app:backgroundTint="@android:color/white"
+        android:tint="@color/black" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_media_play"
+        android:id="@+id/Play"
+        app:backgroundTint="@android:color/white"
+        android:tint="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/pause"
+        android:layout_toEndOf="@+id/pause" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_media_ff"
+        android:id="@+id/fast_foward"
+        app:backgroundTint="@android:color/white"
+        android:tint="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/stop"
+        android:layout_toEndOf="@+id/stop" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@mipmap/stop"
+        android:scaleType="center"
+        android:id="@+id/stop"
+        app:backgroundTint="@android:color/white"
+        app:elevation="2dp"
+        app:rippleColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/Play"
+        android:layout_toEndOf="@+id/Play" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@mipmap/hamburger"
+        android:scaleType="center"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/menu"
+        app:backgroundTint="@android:color/white" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/stock_music"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+</RelativeLayout>
