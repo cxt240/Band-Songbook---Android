@@ -1,5 +1,7 @@
 package com.example.chris.bandsongbook_android;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -84,7 +86,24 @@ public class Admin extends AppCompatActivity {
             }
 
             return super.onOptionsItemSelected(item);
-            }
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Closing Application")
+                .setMessage("Are you sure you want to close the group?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.exit(0);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
