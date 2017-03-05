@@ -21,7 +21,6 @@ import android.view.View;
 public class Group_Details extends AppCompatActivity {
 
     String GroupName;
-    Boolean Admin;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -43,7 +42,6 @@ public class Group_Details extends AppCompatActivity {
 
         Bundle field = getIntent().getExtras();
         GroupName = field.getString("Group Name");
-        Admin = field.getBoolean("Admin");
 
         setContentView(R.layout.activity_group__details);
 
@@ -58,20 +56,6 @@ public class Group_Details extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.start);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent nextScreen = new Intent(getApplicationContext(), Play.class);
-                startActivity(nextScreen);
-
-            }
-        });
-
-        if(!Admin) {
-            fab.setVisibility(View.INVISIBLE);
-        }
 
     }
 

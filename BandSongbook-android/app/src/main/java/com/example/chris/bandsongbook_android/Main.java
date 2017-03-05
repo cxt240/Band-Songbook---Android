@@ -51,7 +51,6 @@ public class Main extends Activity {
                 Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
 
                 nextScreen.putExtra("Group Name", group);
-                nextScreen.putExtra("Admin", false);
 
                 startActivity(nextScreen);
             }

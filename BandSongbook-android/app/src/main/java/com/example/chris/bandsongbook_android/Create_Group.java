@@ -29,7 +29,6 @@ public class Create_Group extends AppCompatActivity {
                 String password = groupCode.getText().toString();
 
                 nextScreen.putExtra("Group Name", group);
-                nextScreen.putExtra("Admin", true);
                 startActivity(nextScreen);
             }
         });
