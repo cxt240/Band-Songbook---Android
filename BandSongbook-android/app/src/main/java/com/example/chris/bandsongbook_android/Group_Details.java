@@ -14,9 +14,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class Group_Details extends AppCompatActivity {
 
-    String GroupName;
+    public String GroupName;
+    private ArrayList<String> files;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -38,7 +41,7 @@ public class Group_Details extends AppCompatActivity {
 
         Bundle field = getIntent().getExtras();
         GroupName = field.getString("Group Name");
-
+        files = field.getStringArrayList("Files");
         setContentView(R.layout.activity_group__details);
 
         getSupportActionBar().setTitle("Group " + GroupName + " Details");

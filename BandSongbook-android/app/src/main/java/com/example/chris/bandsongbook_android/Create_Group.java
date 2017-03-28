@@ -19,11 +19,13 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class Create_Group extends AppCompatActivity {
 
     private EditText groupName;
     private Socket socket;
+    private ArrayList<String> files;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class Create_Group extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__group);
 
+        files = new ArrayList<String>();
         groupName = (EditText) findViewById(R.id.group_name);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -60,6 +63,7 @@ public class Create_Group extends AppCompatActivity {
                                 Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
 
                                 nextScreen.putExtra("Group Name", group);
+                                nextScreen.putExtra("Files", files);
                                 startActivity(nextScreen);
                                 Log.v("Group Status", "Created");
                             }
@@ -95,9 +99,34 @@ public class Create_Group extends AppCompatActivity {
         addFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                addFile();
             }
         });
+    }
+
+    /**
+     * fileChooser for the device. Starts an intent that opens the device's file manager
+     */
+    public void addFile() {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("*/*");
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+        startActivityForResult(chooseFile, 1);
+    }
+
+    /**
+     * gets the result for the filechooser
+     * @param requestCode whether the request was to select a file
+     * @param resultCode whether a file was chosen
+     * @param data path to the file
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if((resultCode == RESULT_OK) && (requestCode == 1)) {
+            String path = data.getData().getPath();
+            Log.v("New File", path);
+            files.add(files.size(), path);
+        }
     }
 
     /**
