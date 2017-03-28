@@ -1,0 +1,6 @@
+Band Songbook is an Android and iOS application that is intended to help rock bands and similar ensembles practice together (in the same room), in real time. This app will take advantage of a music notation system called “tablature” that allows untrained popular music musicians (specifically, guitarists and other stringed instrument players) to try out new songs with ease, while also accommodating for drummers and vocalists. Additionally, it supports an arbitrary number of users reading the music at the same time, allowing anyone in a band with a smartphone or tablet to easily play the same song. This system is intended to be easy to use as well as cross platform. The main engineering challenges for this project is to be able read the file type that will be uploaded and played by the group (MusicXML) as well as leveraging a server to synchronize musicians.
+
+This Android application for the Band Songbook project is written by Chris Tsuei. The corresponding iOS application as well as the code for the server can be found at:
+
+iOS: https://github.com/WJLiddy/Band-Songbook-iOS
+Server: https://github.com/WJLiddy/Band-Songbook-Server
