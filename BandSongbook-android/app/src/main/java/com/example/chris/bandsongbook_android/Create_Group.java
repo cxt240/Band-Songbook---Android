@@ -1,19 +1,36 @@
 package com.example.chris.bandsongbook_android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 public class Create_Group extends AppCompatActivity {
 
     private EditText groupName;
+    private Socket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // overriding StrictMode to allow for network access without AsyncTask
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__group);
 
@@ -23,12 +40,35 @@ public class Create_Group extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
-
                 String group = groupName.getText().toString();
 
-                nextScreen.putExtra("Group Name", group);
-                startActivity(nextScreen);
+                if(isNetworkAvailable()) {
+                    try {
+                        // connecting to server
+                        socket = new Socket("34.197.242.214", 54106);
+
+                        // Protocol for creating a new group
+                        JSONObject create = start(group);
+                        // send packet
+                        send(create);
+
+                        Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
+
+                        nextScreen.putExtra("Group Name", group);
+                        startActivity(nextScreen);
+
+                        socket.close();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Context context = getApplicationContext();
+                    CharSequence text = "No Internet";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast.makeText(context, text, duration);
+                }
             }
         });
 
@@ -39,6 +79,63 @@ public class Create_Group extends AppCompatActivity {
 
             }
         });
+    }
+
+    /**
+     * checks if the device is connected
+     * source: http://www.vogella.com/tutorials/AndroidNetworking/article.html
+     * @return true if yes, else no
+     */
+    public boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * JSON object that contains the start details
+     * @param name the name of the group
+     * @return json object formatted correctly
+     */
+    public static JSONObject start (String name) {
+
+        JSONObject startGroup = new JSONObject();
+
+        try {
+            startGroup.put("request", "create group");
+            startGroup.put("group name", name);
+            startGroup.put("user name", "bandleader");
+        }
+        catch (JSONException e) {
+            System.out.println("Failed to make start packet");
+        }
+
+        return startGroup;
+    }
+
+    /**
+     * sends a packet following protocols to the server
+     * @param jsonObject create group packet to be sent
+     * @throws IOException if there is no valid connection
+     */
+    public void send (JSONObject jsonObject) throws IOException {
+        OutputStream out = socket.getOutputStream();
+
+        // converting the packet to utf-8 bytes (adding a newline char to conform to protocol)
+        JSONObject packet = jsonObject;
+        String serializePacket = packet.toString();
+        StringBuilder frankenstein = new StringBuilder(serializePacket);
+        frankenstein.append('\n');
+
+        byte[] pack2 = frankenstein.toString().getBytes(StandardCharsets.UTF_8);
+
+        // sends packet to server
+        out.write(pack2);
+        out.flush();
     }
 
 }
