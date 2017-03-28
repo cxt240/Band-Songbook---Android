@@ -3,13 +3,13 @@
 
     <string name="group">Enter Group</string>
     <string name="user">Enter Your Name</string>
-    <string name="enter_group_code">Enter Group Code</string>
+    <string name="enter_group_code">Enter Group Name</string>
     <string name="appTitle">Band Songbook</string>
     <string name="create">Create Group</string>
     <string name="title_activity_create__group">Create Group</string>
 
     <string name="name">Group Name</string>
-    <string name="password">Lobby Password</string>
+    <string name="files">Add Music</string>
 
     <string name="details">Group Details</string>
     <string name="action_settings">Settings</string>

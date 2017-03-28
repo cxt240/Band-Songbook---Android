@@ -26,17 +26,11 @@
             android:textAlignment="center"
             android:inputType="textNoSuggestions" />
 
-        <EditText
-            android:hint="@string/password"
-            android:layout_width="wrap_content"
+        <Button
+            android:text="@string/files"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@null"
-            android:id="@+id/Code"
-            android:textSize="36sp"
-            android:textColor="@android:color/white"
-            android:textAlignment="center"
-            android:inputType="textNoSuggestions" />
+            android:id="@+id/addFile" />
 
     </LinearLayout>
     

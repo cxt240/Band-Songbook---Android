@@ -45,8 +45,7 @@ public class Main extends Activity {
                 String member = name.getText().toString();
                 // code to enter via server if password is correct
 
-                String group = null; //get group name from server
-                String password = groupCode.getText().toString();
+                String group = groupCode.getText().toString();
 
                 Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
 

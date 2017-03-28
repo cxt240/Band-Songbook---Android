@@ -8,6 +8,15 @@
     android:background="#0099cc"
     tools:context="com.example.chris.bandsongbook_android.Create_Group">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:backgroundTint="@android:color/white" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,27 +35,12 @@
             android:textAlignment="center"
             android:inputType="textNoSuggestions" />
 
-        <EditText
-            android:hint="@string/password"
-            android:layout_width="wrap_content"
+        <Button
+            android:text="@string/files"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@null"
-            android:id="@+id/Code"
-            android:textSize="36sp"
-            android:textColor="@android:color/white"
-            android:textAlignment="center"
-            android:inputType="textNoSuggestions" />
+            android:id="@+id/addFile" />
 
     </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="@android:color/white" />
 
 </android.support.design.widget.CoordinatorLayout>
