@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,12 +52,30 @@ public class Create_Group extends AppCompatActivity {
                         JSONObject create = start(group);
                         // send packet
                         send(create);
+                        JSONObject response = receiveJson();
 
-                        Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
+                        if(response != null) {
+                            String status = response.getString("response");
+                            if(status.equals("ok")) {
+                                Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
 
-                        nextScreen.putExtra("Group Name", group);
-                        startActivity(nextScreen);
-
+                                nextScreen.putExtra("Group Name", group);
+                                startActivity(nextScreen);
+                                Log.v("Group Status", "Created");
+                            }
+                            else {
+                                Log.v("Group", "Failed Join");
+                                Context context = getApplicationContext();
+                                int duration = Toast.LENGTH_SHORT;
+                                Toast.makeText(context, status, duration);
+                            }
+                        }
+                        else {
+                            Context context = getApplicationContext();
+                            CharSequence text = "Unable to receive packet";
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast.makeText(context, text, duration);
+                        }
                         socket.close();
                     }
                     catch (Exception e) {
@@ -136,6 +155,28 @@ public class Create_Group extends AppCompatActivity {
         // sends packet to server
         out.write(pack2);
         out.flush();
+    }
+
+    /**
+     * receive a JSON from the server
+     * @return the read JSON packet
+     * @throws IOException if invalid response
+     */
+    public JSONObject receiveJson() throws IOException {
+
+        InputStreamReader receive = new InputStreamReader(socket.getInputStream());
+        BufferedReader receiver = new BufferedReader(receive);
+        JSONObject packet = null;
+
+        try {
+            packet = new JSONObject(receiver.readLine());
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return packet;
     }
 
 }

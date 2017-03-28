@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 import android.widget.EditText;
@@ -67,17 +68,25 @@ public class Main extends Activity {
                         socket = new Socket("34.197.242.214", 54106);
                         String member = name.getText().toString();
 
+                        // sending a JSON and receiving the response
                         JSONObject joiner = join(group, userName);
                         send(joiner);
+                        JSONObject response = receiveJson();
 
-
-                        // code to enter via server if password is correct
-
-                        Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
-                        nextScreen.putExtra("Group Name", group);
-                        startActivity(nextScreen);
+                        String status = response.getString("response");
+                        if(status.equals("ok")) {
+                            Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
+                            nextScreen.putExtra("Group Name", group);
+                            startActivity(nextScreen);
+                            Log.v("Group Status", "Joined");
+                        }
+                        else {
+                            Context context = getApplicationContext();
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast.makeText(context, status, duration);
+                        }
                     }
-                    catch (IOException e) {
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
                     finally {
@@ -156,4 +165,25 @@ public class Main extends Activity {
         out.flush();
     }
 
+    /**
+     * receive a JSON from the server
+     * @return the read JSON packet
+     * @throws IOException if invalid response
+     */
+    public JSONObject receiveJson() throws IOException {
+
+        InputStreamReader receive = new InputStreamReader(socket.getInputStream());
+        BufferedReader receiver = new BufferedReader(receive);
+        JSONObject packet = null;
+
+        try {
+            packet = new JSONObject(receiver.readLine());
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return packet;
+    }
 }
