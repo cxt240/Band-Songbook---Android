@@ -60,10 +60,14 @@ public class Create_Group extends AppCompatActivity {
                         if(response != null) {
                             String status = response.getString("response");
                             if(status.equals("ok")) {
-                                Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
 
+                                // create intent and add params to bundle
+                                Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                                 nextScreen.putExtra("Group Name", group);
                                 nextScreen.putExtra("Files", files);
+                                nextScreen.putExtra("Bandleader", true);
+
+                                // Start a the groupDetail activity
                                 startActivity(nextScreen);
                                 Log.v("Group Status", "Created");
                             }

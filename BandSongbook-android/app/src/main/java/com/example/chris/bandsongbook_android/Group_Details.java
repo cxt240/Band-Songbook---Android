@@ -1,7 +1,6 @@
 package com.example.chris.bandsongbook_android;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +18,9 @@ import java.util.ArrayList;
 public class Group_Details extends AppCompatActivity {
 
     public String GroupName;
+    public Boolean bandleader;
     private ArrayList<String> files;
+    private ArrayList<String> members;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -39,9 +40,20 @@ public class Group_Details extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // get passed params
         Bundle field = getIntent().getExtras();
         GroupName = field.getString("Group Name");
-        files = field.getStringArrayList("Files");
+        bandleader = field.getBoolean("Bandleader");
+
+
+        if(bandleader) {
+            files = field.getStringArrayList("Files");
+            members = new ArrayList<String>();
+            members.add(0, "Bandleader");
+        }
+        else  {
+            // receive the S1 fragment and assign fields from there.
+        }
         setContentView(R.layout.activity_group__details);
 
         getSupportActionBar().setTitle("Group " + GroupName + " Details");
@@ -123,7 +135,7 @@ public class Group_Details extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 
