@@ -17,7 +17,7 @@
         tools:context="com.example.chris.bandsongbook_android.File">
 
         <ListView
-            android:id="@+id/member_list"
+            android:id="@+id/file_list"
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
         </ListView>
