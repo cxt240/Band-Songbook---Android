@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,8 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import java.net.URI;
+import android.app.Activity;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ public class Files extends Fragment{
     private ListView fileList;
     private List<String> filenames;
     private boolean bandleader = false;
+    private static final int FILE_SELECT_CODE = 0;
 
     public FloatingActionButton addFile;
     public Files() {}
@@ -85,44 +86,19 @@ public class Files extends Fragment{
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
-        startActivityForResult(chooseFile, 42);
+        startActivityForResult(Intent.createChooser(chooseFile, "Select file"), FILE_SELECT_CODE);
     }
 
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent resultData) {
-        String path = resultData.getDataString();
-        filenames.add(path);
-        fileList.notify();
-    }
-
-    /**
-     * getting the filepath that was chosen
-     * taken from http://stackoverflow.com/questions/7856959/android-file-chooser
-     * @param context current context
-     * @param uri path to file
-     * @return file path string
-     * @throws URISyntaxException invalid path
-     */
-    public static String getPath(Context context, URI uri) throws URISyntaxException {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
-            Cursor cursor = null;
-
-            try {
-                android.net.Uri uriPath = android.net.Uri.parse(uri.toString());
-                cursor = context.getContentResolver().query(uriPath, projection, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow("_data");
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(requestCode == FILE_SELECT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = resultData.getData();
+            if (uri.getLastPathSegment().endsWith("mxl")) {
+                String path = uri.getPath();
+                filenames.add(path);
+                fileList.notify();
             }
         }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
     }
+
 }

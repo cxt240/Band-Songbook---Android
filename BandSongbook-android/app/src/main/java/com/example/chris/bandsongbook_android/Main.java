@@ -77,6 +77,7 @@ public class Main extends Activity {
 //                        if(status.equals("ok")) {
                             Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                             nextScreen.putExtra("Group Name", group);
+                            nextScreen.putExtra("Name", userName);
                             startActivity(nextScreen);
                             Log.v("Group Status", "Joined");
 //                        }

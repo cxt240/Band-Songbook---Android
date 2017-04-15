@@ -56,6 +56,7 @@ public class Group_Details extends AppCompatActivity {
             files = new ArrayList<String>();
             members = new ArrayList<String>();
             members.add("Bandleader");
+            members.add(field.getString("Name"));
             // TODO: receive the S1 fragment and assign fields from there.
         }
         setContentView(R.layout.activity_group__details);

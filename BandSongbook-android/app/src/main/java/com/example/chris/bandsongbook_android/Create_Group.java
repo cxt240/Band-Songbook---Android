@@ -3,6 +3,7 @@ package com.example.chris.bandsongbook_android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -22,10 +23,9 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-
 public class Create_Group extends AppCompatActivity {
 
+    private static final int FILE_SELECT_CODE = 0;
     private EditText groupName;
     private Socket socket;
     private ArrayList<String> files;
@@ -116,31 +116,24 @@ public class Create_Group extends AppCompatActivity {
      */
     public void addFile() {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
-        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-        startActivityForResult(chooseFile, 1);
+        startActivityForResult(Intent.createChooser(chooseFile, "Select file"), FILE_SELECT_CODE);
     }
 
     /**
      * gets the result for the filechooser
      * @param requestCode whether the request was to select a file
      * @param resultCode whether a file was chosen
-     * @param data path to the file
+     * @param resultData path to the file
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 42 && resultCode == Activity.RESULT_OK) {
-            URI uri = null;
-            if (data != null) {
-                try {
-                    uri = new java.net.URI(data.getData().toString());
-                    String path = Files.getPath(this, uri);
-                    Log.i(TAG, "Path: " + path);
-                    files.add(path);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if(requestCode == FILE_SELECT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = resultData.getData();
+            if (uri.getLastPathSegment().endsWith("mxl")) {
+                String path = uri.getPath();
+                files.add(path);
             }
         }
     }

@@ -13,13 +13,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 
 
 public class Members extends Fragment{
 
-    private ListView memberList;
-    private ArrayList<String> members;
+    public ListView memberList;
+    public ArrayList<String> members;
+    public HashMap<String, boolean[]> instruments;
+    public boolean bandleader;
+
     public Members() {}
 
     @Override
@@ -29,7 +32,15 @@ public class Members extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_member, container, false);
 
         Group_Details activity = (Group_Details) getActivity();
+        instruments = new HashMap<String, boolean[]>();
         members = activity.members;
+        bandleader = activity.bandleader;
+
+        for(String name : members) {
+            boolean[] parts = new boolean[3];
+            Arrays.fill(parts, false);
+            instruments.put(name, parts);
+        }
 
         memberList = (ListView) rootView.findViewById(R.id.member_list);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, members);
@@ -38,27 +49,27 @@ public class Members extends Fragment{
         memberList.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CharSequence[] instruments = {"Voice", "Guitar", "Drums"};
-                final boolean[] parts = new boolean[instruments.length];
-                for(int i = 0; i < parts.length; i++) {
-                    parts[i] = false;
-                }
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                CharSequence[] parts = {"Voice", "Guitar", "Drums"};
+                final AdapterView<?> list = parent;
+                final boolean[] select = instruments.get((String)parent.getItemAtPosition(position));
 
                 new AlertDialog.Builder(getContext())
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Choose Parts")
-                        .setMultiChoiceItems(instruments, parts, new DialogInterface.OnMultiChoiceClickListener() {
+                        .setMultiChoiceItems(parts, select, new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                parts[which] = isChecked;
+                                select[which] = isChecked;
                             }
                         })
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                if(bandleader) {
+                                    instruments.put((String) list.getItemAtPosition(position), select);
+                                }
                             }
                         })
                         .setNegativeButton("Cancel", null)
