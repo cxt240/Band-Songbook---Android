@@ -19,8 +19,9 @@ public class Group_Details extends AppCompatActivity {
 
     public String GroupName;
     public Boolean bandleader;
-    private ArrayList<String> files;
-    private ArrayList<String> members;
+    public ArrayList<String> files;
+    public ArrayList<String> members;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -49,10 +50,13 @@ public class Group_Details extends AppCompatActivity {
         if(bandleader) {
             files = field.getStringArrayList("Files");
             members = new ArrayList<String>();
-            members.add(0, "Bandleader");
+            members.add("Bandleader");
         }
         else  {
-            // receive the S1 fragment and assign fields from there.
+            files = new ArrayList<String>();
+            members = new ArrayList<String>();
+            members.add("Bandleader");
+            // TODO: receive the S1 fragment and assign fields from there.
         }
         setContentView(R.layout.activity_group__details);
 

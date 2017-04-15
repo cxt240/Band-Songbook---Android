@@ -18,6 +18,7 @@ import java.util.List;
 public class Members extends Fragment{
 
     private ListView memberList;
+    private ArrayList<String> members;
     public Members() {}
 
     @Override
@@ -25,9 +26,9 @@ public class Members extends Fragment{
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_member, container, false);
-        List<String> members = new ArrayList<String>();
-        members.add("Chris");
-        members.add("Bandleader");
+
+        Group_Details activity = (Group_Details) getActivity();
+        members = activity.members;
 
         memberList = (ListView) rootView.findViewById(R.id.member_list);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, members);
