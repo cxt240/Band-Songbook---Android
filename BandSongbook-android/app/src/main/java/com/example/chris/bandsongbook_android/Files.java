@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.app.Activity;
+
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class Files extends Fragment{
 
     private ListView fileList;
     private List<String> filenames;
+    public ArrayAdapter<String> arrayAdapter;
     private boolean bandleader = false;
     private static final int FILE_SELECT_CODE = 0;
 
@@ -41,7 +47,7 @@ public class Files extends Fragment{
 
         filenames = activity.files;
         fileList = (ListView) rootView.findViewById(R.id.file_list);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
+        arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
         fileList.setAdapter(arrayAdapter);
 
         fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -91,12 +97,15 @@ public class Files extends Fragment{
 
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent resultData) {
-        if(requestCode == FILE_SELECT_CODE && resultCode == Activity.RESULT_OK) {
+        Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
+        if(requestCode == FILE_SELECT_CODE) {
             Uri uri = resultData.getData();
-            if (uri.getLastPathSegment().endsWith("mxl")) {
-                String path = uri.getPath();
-                filenames.add(path);
-                fileList.notify();
+            File file = new File(uri.toString());
+            String actualPath = file.getAbsolutePath();
+            Log.v(TAG, actualPath);
+            if(!filenames.contains(actualPath)) {
+                filenames.add(actualPath);
+                arrayAdapter.notifyDataSetChanged();
             }
         }
     }

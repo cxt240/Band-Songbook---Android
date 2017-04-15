@@ -23,6 +23,8 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
+
 public class Create_Group extends AppCompatActivity {
 
     private static final int FILE_SELECT_CODE = 0;
@@ -129,11 +131,14 @@ public class Create_Group extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if(requestCode == FILE_SELECT_CODE && resultCode == Activity.RESULT_OK) {
+        Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
+        if(requestCode == FILE_SELECT_CODE) {
             Uri uri = resultData.getData();
-            if (uri.getLastPathSegment().endsWith("mxl")) {
-                String path = uri.getPath();
-                files.add(path);
+            File file = new File(uri.toString());
+            String actualPath = file.getAbsolutePath();
+            Log.v(TAG, actualPath);
+            if(!files.contains(actualPath)) {
+                files.add(actualPath);
             }
         }
     }
