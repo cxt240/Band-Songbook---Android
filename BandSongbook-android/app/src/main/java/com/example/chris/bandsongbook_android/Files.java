@@ -28,9 +28,9 @@ import static android.content.ContentValues.TAG;
 public class Files extends Fragment{
 
     private ListView fileList;
-    private List<String> filenames;
+    public List<String> filenames;
     public ArrayAdapter<String> arrayAdapter;
-    private boolean bandleader = false;
+    public boolean bandleader = false;
     private static final int FILE_SELECT_CODE = 0;
 
     public FloatingActionButton addFile;
@@ -53,7 +53,7 @@ public class Files extends Fragment{
         fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final ArrayList parts = new ArrayList();
                 new AlertDialog.Builder(getContext())
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -63,7 +63,11 @@ public class Files extends Fragment{
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                Intent play = new Intent(getContext(), Play.class);
+                                play.putExtra("Songs", new ArrayList<String>(filenames));
+                                play.putExtra("Bandleader", bandleader);
+                                play.putExtra("Play", filenames.get(position));
+                                startActivity(play);
                             }
                         })
                         .setNegativeButton("Cancel", null)
