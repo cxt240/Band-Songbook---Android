@@ -53,14 +53,12 @@ public class Play extends AppCompatActivity {
                 String[] fileList = new String[files.size()];
                 fileList = files.toArray(fileList);
 
-
-                new android.app.AlertDialog.Builder(getApplicationContext())
+                new android.app.AlertDialog.Builder(Play.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Choose New Song")
-                        .setSingleChoiceItems(fileList, selected, new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(fileList, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                selected = which;
                             }
                         })
                         .setPositiveButton("Change", new DialogInterface.OnClickListener()
@@ -85,6 +83,7 @@ public class Play extends AppCompatActivity {
             }
         });
         rewind2 = (FloatingActionButton) findViewById(R.id.rewind2);
+        rewind2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 speed = -2;
