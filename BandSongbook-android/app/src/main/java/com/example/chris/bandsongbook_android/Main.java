@@ -64,36 +64,36 @@ public class Main extends Activity {
                 if(isNetworkAvailable()) {
 
                     try {
-                        // connecting to server
-                        socket = new Socket("34.197.242.214", 54106);
-                        String member = name.getText().toString();
-
-                        // sending a JSON and receiving the response
-                        JSONObject joiner = join(group, userName);
-                        send(joiner);
-                        JSONObject response = receiveJson();
-
-                        String status = response.getString("response");
-                        if(status.equals("ok")) {
+//                        // connecting to server
+//                        socket = new Socket("34.197.242.214", 54106);
+//                        String member = name.getText().toString();
+//
+//                        // sending a JSON and receiving the response
+//                        JSONObject joiner = join(group, userName);
+//                        send(joiner);
+//                        JSONObject response = receiveJson();
+//
+//                        String status = response.getString("response");
+//                        if(status.equals("ok")) {
                             Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                             nextScreen.putExtra("Group Name", group);
                             startActivity(nextScreen);
                             Log.v("Group Status", "Joined");
-                        }
-                        else {
-                            Context context = getApplicationContext();
-                            int duration = Toast.LENGTH_SHORT;
-                            Toast.makeText(context, status, duration);
-                        }
+//                        }
+//                        else {
+//                            Context context = getApplicationContext();
+//                            int duration = Toast.LENGTH_SHORT;
+//                            Toast.makeText(context, status, duration);
+//                        }
                     }
                     catch (Exception e) {
                         e.printStackTrace();
                     }
                     finally {
-                        try {
-                            socket.close();
-                        }
-                        catch (Exception e) {      }
+//                        try {
+//                            socket.close();
+//                        }
+//                        catch (Exception e) {      }
                     }
                 }
                 else {

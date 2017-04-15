@@ -2,7 +2,9 @@ package com.example.chris.bandsongbook_android;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +19,19 @@ import java.util.List;
 public class Files extends Fragment{
 
     private ListView fileList;
+    private List<String> filenames;
 
+    public FloatingActionButton moreFiles;
     public Files() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.fragment_member, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_files, container, false);
 
-        List<String> filenames = new ArrayList<String>();
-
+        filenames = new ArrayList<String>();
+        filenames.add("empty");
         fileList = (ListView) rootView.findViewById(R.id.file_list);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
         fileList.setAdapter(arrayAdapter);
@@ -53,6 +57,24 @@ public class Files extends Fragment{
             }
 
         });
+
+        FloatingActionButton addFile = (FloatingActionButton) rootView.findViewById(R.id.file);
+        addFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFile();
+            }
+        });
         return rootView;
+    }
+
+    /**
+     * fileChooser for the device. Starts an intent that opens the device's file manager
+     */
+    public void addFile() {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("*/*");
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+        startActivityForResult(chooseFile, 1);
     }
 }

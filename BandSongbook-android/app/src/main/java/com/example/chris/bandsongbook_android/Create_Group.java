@@ -49,17 +49,17 @@ public class Create_Group extends AppCompatActivity {
                 if(isNetworkAvailable()) {
                     try {
                         // connecting to server
-                        socket = new Socket("34.197.242.214", 54106);
-
-                        // Protocol for creating a new group
-                        JSONObject create = start(group);
-                        // send packet
-                        send(create);
-                        JSONObject response = receiveJson();
-
-                        if(response != null) {
-                            String status = response.getString("response");
-                            if(status.equals("ok")) {
+//                        socket = new Socket("34.197.242.214", 54106);
+//
+//                        // Protocol for creating a new group
+//                        JSONObject create = start(group);
+//                        // send packet
+//                        send(create);
+//                        JSONObject response = receiveJson();
+//
+//                        if(response != null) {
+//                            String status = response.getString("response");
+//                            if(status.equals("ok")) {
 
                                 // create intent and add params to bundle
                                 Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
@@ -70,21 +70,21 @@ public class Create_Group extends AppCompatActivity {
                                 // Start a the groupDetail activity
                                 startActivity(nextScreen);
                                 Log.v("Group Status", "Created");
-                            }
-                            else {
-                                Log.v("Group", "Failed Join");
-                                Context context = getApplicationContext();
-                                int duration = Toast.LENGTH_SHORT;
-                                Toast.makeText(context, status, duration);
-                            }
-                        }
-                        else {
-                            Context context = getApplicationContext();
-                            CharSequence text = "Unable to receive packet";
-                            int duration = Toast.LENGTH_SHORT;
-                            Toast.makeText(context, text, duration);
-                        }
-                        socket.close();
+//                            }
+//                            else {
+//                                Log.v("Group", "Failed Join");
+//                                Context context = getApplicationContext();
+//                                int duration = Toast.LENGTH_SHORT;
+//                                Toast.makeText(context, status, duration);
+//                            }
+//                        }
+//                        else {
+//                            Context context = getApplicationContext();
+//                            CharSequence text = "Unable to receive packet";
+//                            int duration = Toast.LENGTH_SHORT;
+//                            Toast.makeText(context, text, duration);
+//                        }
+//                        socket.close();
                     }
                     catch (Exception e) {
                         e.printStackTrace();
