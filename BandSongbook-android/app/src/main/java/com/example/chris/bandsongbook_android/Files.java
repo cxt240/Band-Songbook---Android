@@ -1,8 +1,10 @@
 package com.example.chris.bandsongbook_android;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,7 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.security.acl.Group;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class Files extends Fragment{
     private List<String> filenames;
     private boolean bandleader = false;
 
-    public FloatingActionButton moreFiles;
+    public FloatingActionButton addFile;
     public Files() {}
 
     @Override
@@ -62,7 +65,7 @@ public class Files extends Fragment{
 
         });
 
-        FloatingActionButton addFile = (FloatingActionButton) rootView.findViewById(R.id.file);
+        addFile = (FloatingActionButton) rootView.findViewById(R.id.file);
         addFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,8 +83,46 @@ public class Files extends Fragment{
      */
     public void addFile() {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
-        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-        startActivityForResult(chooseFile, 1);
+        startActivityForResult(chooseFile, 42);
+    }
+
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent resultData) {
+        String path = resultData.getDataString();
+        filenames.add(path);
+        fileList.notify();
+    }
+
+    /**
+     * getting the filepath that was chosen
+     * taken from http://stackoverflow.com/questions/7856959/android-file-chooser
+     * @param context current context
+     * @param uri path to file
+     * @return file path string
+     * @throws URISyntaxException invalid path
+     */
+    public static String getPath(Context context, URI uri) throws URISyntaxException {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = { "_data" };
+            Cursor cursor = null;
+
+            try {
+                android.net.Uri uriPath = android.net.Uri.parse(uri.toString());
+                cursor = context.getContentResolver().query(uriPath, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
     }
 }

@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,22 +39,19 @@ public class Members extends Fragment{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final CharSequence[] instruments = {"Voice", "Guitar", "Drums"};
-                final ArrayList parts = new ArrayList();
+                CharSequence[] instruments = {"Voice", "Guitar", "Drums"};
+                final boolean[] parts = new boolean[instruments.length];
+                for(int i = 0; i < parts.length; i++) {
+                    parts[i] = false;
+                }
+
                 new AlertDialog.Builder(getContext())
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Choose Parts")
-                        .setMessage("Set the part for this member")
-                        .setMultiChoiceItems(instruments, null, new DialogInterface.OnMultiChoiceClickListener() {
+                        .setMultiChoiceItems(instruments, parts, new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                if (isChecked) {
-                                    // If the user checked the item, add it to the selected items
-                                    parts.add(which);
-                                } else if (parts.contains(which)) {
-                                    // Else, if the item is already in the array, remove it
-                                    parts.remove(Integer.valueOf(which));
-                                }
+                                parts[which] = isChecked;
                             }
                         })
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener()

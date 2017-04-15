@@ -1,5 +1,6 @@
 package com.example.chris.bandsongbook_android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class Create_Group extends AppCompatActivity {
 
@@ -126,10 +129,19 @@ public class Create_Group extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if((resultCode == RESULT_OK) && (requestCode == 1)) {
-            String path = data.getData().getPath();
-            Log.v("New File", path);
-            files.add(files.size(), path);
+        if(requestCode == 42 && resultCode == Activity.RESULT_OK) {
+            URI uri = null;
+            if (data != null) {
+                try {
+                    uri = new java.net.URI(data.getData().toString());
+                    String path = Files.getPath(this, uri);
+                    Log.i(TAG, "Path: " + path);
+                    files.add(path);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
