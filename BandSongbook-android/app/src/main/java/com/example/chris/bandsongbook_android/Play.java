@@ -110,7 +110,6 @@ public class Play extends AppCompatActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reader.changeColor();
                 if(speed == 0) {speed = 1;}
                 else {speed = 0;}
             }
