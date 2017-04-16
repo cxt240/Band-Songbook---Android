@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_play"
@@ -14,131 +14,135 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/options"
-            android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">=
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="Options" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/SongName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="" />
+            <Button
+                android:id="@+id/options"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:text="Options" />
 
-        <Button
-            android:id="@+id/songs"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/SongName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="" />
+
+            <Button
+                android:id="@+id/songs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:text="Songs" />
+        </LinearLayout>
+
+        <com.example.chris.bandsongbook_android.MusicPlayer
+            android:id="@+id/musicPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="12dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="Songs" />
+            android:id="@+id/linearLayout">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/previous"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_media_previous" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/rewind2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_media_rew" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/rewind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_media_rew" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/stop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:scaleType="center"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:elevation="2dp"
+                app:fabSize="mini"
+                app:rippleColor="@android:color/white"
+                app:srcCompat="@mipmap/ic_stop" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/Play"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_media_play"
+                android:layout_weight="1"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fast_foward"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_media_ff"
+                android:layout_weight="1"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fast_foward2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@android:color/holo_blue_light"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_media_ff"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="175dp"
-        app:srcCompat="@drawable/stock_music"
-        android:layout_above="@+id/linearLayout"
-        android:layout_alignParentStart="true" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="12dp"
-        android:id="@+id/linearLayout">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/previous"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:tint="@android:color/white"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_media_previous" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/rewind2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:tint="@android:color/white"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_media_rew" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/rewind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:tint="@android:color/white"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_media_rew" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/stop"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:scaleType="center"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:elevation="2dp"
-            app:fabSize="mini"
-            app:rippleColor="@android:color/white"
-            app:srcCompat="@mipmap/ic_stop" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/Play"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:tint="@android:color/white"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_media_play"
-            android:layout_weight="1"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fast_foward"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:tint="@android:color/white"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_media_ff"
-            android:layout_weight="1"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fast_foward2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:tint="@android:color/white"
-            app:backgroundTint="@android:color/holo_blue_light"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_media_ff"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

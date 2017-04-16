@@ -33,6 +33,8 @@ public class Play extends AppCompatActivity {
 
     public TextView SongName;
     public String currentSong;
+
+    public MusicPlayer reader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,7 @@ public class Play extends AppCompatActivity {
         files = extras.getStringArrayList("Songs");
         currentSong = extras.getString("Play");
 
+        reader = (MusicPlayer) findViewById(R.id.musicPlayer);
         SongName = (TextView) findViewById(R.id.SongName);
         SongName.setText(currentSong);
 
@@ -100,13 +103,14 @@ public class Play extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO exit activity
+                System.exit(0);
             }
         });
         play = (FloatingActionButton) findViewById(R.id.Play);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                reader.changeColor();
                 if(speed == 0) {speed = 1;}
                 else {speed = 0;}
             }
