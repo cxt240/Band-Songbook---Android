@@ -3,6 +3,7 @@ package com.example.chris.bandsongbook_android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -30,7 +32,8 @@ public class Create_Group extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     private EditText groupName;
     private Socket socket;
-    private ArrayList<String> files;
+    private ArrayList<ArrayList<PartInfo>> files;
+    private ArrayList<String> songs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,8 @@ public class Create_Group extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__group);
 
-        files = new ArrayList<String>();
+        files = new ArrayList<ArrayList<PartInfo>>();
+        songs = new ArrayList<String>();
         groupName = (EditText) findViewById(R.id.group_name);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -70,6 +74,7 @@ public class Create_Group extends AppCompatActivity {
                                 Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                                 nextScreen.putExtra("Group Name", group);
                                 nextScreen.putExtra("Files", files);
+                                nextScreen.putExtra("Songs", songs);
                                 nextScreen.putExtra("Bandleader", true);
 
                                 // Start a the groupDetail activity
@@ -123,6 +128,28 @@ public class Create_Group extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(chooseFile, "Select file"), FILE_SELECT_CODE);
     }
 
+    // from http://stackoverflow.com/questions/7856959/android-file-chooser
+    public static String getPath(Context context, Uri uri) throws URISyntaxException {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = { "_data" };
+            Cursor cursor = null;
+
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                // Eat it
+            }
+        }
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
     /**
      * gets the result for the filechooser
      * @param requestCode whether the request was to select a file
@@ -134,12 +161,18 @@ public class Create_Group extends AppCompatActivity {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
         if(requestCode == FILE_SELECT_CODE) {
             Uri uri = resultData.getData();
-            File file = new File(uri.toString());
-            String actualPath = file.getAbsolutePath();
-            Log.v(TAG, actualPath);
-            if(!files.contains(actualPath)) {
-                files.add(actualPath);
+            try {
+                String actualPath = getPath(getApplicationContext(), uri);
+                MusicXmlParser parseThis = new MusicXmlParser();
+                parseThis.parser(actualPath);
+
+                Log.v(TAG, actualPath);
+                if (!songs.contains(parseThis.title)) {
+                    files.add(parseThis.PartMeasures);
+                    songs.add(parseThis.title);
+                }
             }
+            catch (Exception e) {e.printStackTrace();}
         }
     }
 

@@ -1,4 +1,4 @@
-package xmlParser;
+package com.example.chris.bandsongbook_android;
 
 /**
  * simple pair class holding the string and the fret for a note

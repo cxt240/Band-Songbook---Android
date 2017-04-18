@@ -1,4 +1,4 @@
-package xmlParser;
+package com.example.chris.bandsongbook_android;
 
 import java.util.ArrayList;
 

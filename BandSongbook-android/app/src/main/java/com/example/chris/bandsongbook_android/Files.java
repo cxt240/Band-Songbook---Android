@@ -45,7 +45,7 @@ public class Files extends Fragment{
         Group_Details activity = (Group_Details) getActivity();
         bandleader = activity.bandleader;
 
-        filenames = activity.files;
+        filenames = activity.songs;
         fileList = (ListView) rootView.findViewById(R.id.file_list);
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
         fileList.setAdapter(arrayAdapter);
@@ -104,13 +104,18 @@ public class Files extends Fragment{
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
         if(requestCode == FILE_SELECT_CODE) {
             Uri uri = resultData.getData();
-            File file = new File(uri.toString());
-            String actualPath = file.getAbsolutePath();
-            Log.v(TAG, actualPath);
-            if(!filenames.contains(actualPath)) {
-                filenames.add(actualPath);
-                arrayAdapter.notifyDataSetChanged();
+            try {
+                String actualPath = Create_Group.getPath(getContext(), uri);
+                MusicXmlParser parseThis = new MusicXmlParser();
+                parseThis.parser(actualPath);
+                Group_Details activity = (Group_Details) getActivity();
+                if (!filenames.contains(parseThis.title)) {
+                    activity.files.add(parseThis.PartMeasures);
+                    filenames.add(parseThis.title);
+                    arrayAdapter.notifyDataSetChanged();
+                }
             }
+            catch (Exception e) {e.printStackTrace();}
         }
     }
 

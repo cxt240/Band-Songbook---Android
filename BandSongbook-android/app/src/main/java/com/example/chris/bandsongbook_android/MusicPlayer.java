@@ -19,9 +19,12 @@ public class MusicPlayer extends View{
     public int width;
     private Paint paint;
 
+    public MusicXmlParser parser;
+
     public MusicPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
+        parser = new MusicXmlParser();
     }
 
     @Override
