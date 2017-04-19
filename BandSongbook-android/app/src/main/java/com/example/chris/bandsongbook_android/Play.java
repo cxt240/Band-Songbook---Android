@@ -48,7 +48,14 @@ public class Play extends AppCompatActivity {
         reader = (MusicPlayer) findViewById(R.id.musicPlayer);
         SongName = (TextView) findViewById(R.id.SongName);
         SongName.setText(currentSong);
-       // reader.songChanged();
+
+        for(int i = 0; i < songList.size(); i++) {
+            MusicXmlParser read = new MusicXmlParser();
+            read.parser(songList.get(i));
+            if(read.title.equals((currentSong))) {
+                reader.songChanged(songList.get(i), 0);
+            }
+        }
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
