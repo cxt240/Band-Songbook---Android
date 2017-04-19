@@ -76,7 +76,8 @@ public class Play extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SongName.setText(files.get(selected));
-                                //MusicPlayer call
+                                reader.songChanged(songList.get(selected), 0);//TODO part number should be selected one
+                                reader.invalidate();
                             }
                         })
                         .setNegativeButton("Cancel", null)
