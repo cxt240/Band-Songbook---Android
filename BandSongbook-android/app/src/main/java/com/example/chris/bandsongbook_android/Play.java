@@ -48,7 +48,7 @@ public class Play extends AppCompatActivity {
         reader = (MusicPlayer) findViewById(R.id.musicPlayer);
         SongName = (TextView) findViewById(R.id.SongName);
         SongName.setText(currentSong);
-
+       // reader.songChanged();
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
