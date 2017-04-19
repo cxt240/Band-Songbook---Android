@@ -1,21 +1,20 @@
 package com.example.chris.bandsongbook_android;
 
 import android.content.DialogInterface;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class Play extends AppCompatActivity {
 
     public List<String> files;
+    public ArrayList<String> songList;
     public boolean Bandleader = false;
     public int selected = 0;
     public int speed = 0;
@@ -44,6 +43,7 @@ public class Play extends AppCompatActivity {
         Bandleader = extras.getBoolean("Bandleader");
         files = extras.getStringArrayList("Songs");
         currentSong = extras.getString("Play");
+        songList = extras.getStringArrayList("XML");
 
         reader = (MusicPlayer) findViewById(R.id.musicPlayer);
         SongName = (TextView) findViewById(R.id.SongName);
@@ -53,7 +53,13 @@ public class Play extends AppCompatActivity {
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] fileList = new String[files.size()];
+                final ArrayList<String> titles = new ArrayList<String>();
+                for(int i = 0; i < songList.size(); i++) {
+                    MusicXmlParser parser = new MusicXmlParser();
+                    parser.parser(songList.get(i));
+                    titles.add(parser.title);
+                }
+                String[] fileList = (String[])titles.toArray();
                 fileList = files.toArray(fileList);
 
                 new android.app.AlertDialog.Builder(Play.this)
@@ -62,6 +68,7 @@ public class Play extends AppCompatActivity {
                         .setSingleChoiceItems(fileList, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
                             }
                         })
                         .setPositiveButton("Change", new DialogInterface.OnClickListener()
@@ -69,6 +76,7 @@ public class Play extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SongName.setText(files.get(selected));
+                                //MusicPlayer call
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -103,7 +111,7 @@ public class Play extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.exit(0);
+                finish();
             }
         });
         play = (FloatingActionButton) findViewById(R.id.Play);

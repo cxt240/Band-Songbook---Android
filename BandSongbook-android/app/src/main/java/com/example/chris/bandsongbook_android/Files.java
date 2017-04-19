@@ -1,10 +1,9 @@
 package com.example.chris.bandsongbook_android;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,14 +15,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.app.Activity;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +34,6 @@ public class Files extends Fragment{
     public boolean bandleader = false;
 
     private static final int READ_REQUEST_CODE = 42;
-    public ArrayList<String> xmlSongs;
     public FloatingActionButton addFile;
     public Files() {}
 
@@ -73,6 +68,7 @@ public class Files extends Fragment{
                                 Intent play = new Intent(getContext(), Play.class);
                                 play.putExtra("Songs", new ArrayList<String>(filenames));
                                 play.putExtra("Bandleader", bandleader);
+                                play.putExtra("XML", XMLSongs);
                                 play.putExtra("Play", filenames.get(position));
                                 startActivity(play);
                             }

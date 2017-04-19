@@ -22,7 +22,7 @@ public class PartInfo {
 	
 	public void add(int string, int fret, int time) {
 		Pair adder = new Pair(string, fret, time);
-		System.out.println(string + " " + fret + " " + time);
+		//System.out.println(string + " " + fret + " " + time);
 		notes.add(adder);
 	}
 }
