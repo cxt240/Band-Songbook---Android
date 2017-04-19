@@ -18,7 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.app.Activity;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +35,7 @@ public class Files extends Fragment{
     public List<String> filenames;
     public ArrayAdapter<String> arrayAdapter;
     public boolean bandleader = false;
-    private static final int FILE_SELECT_CODE = 0;
+    private static final int READ_REQUEST_CODE = 42;
 
     public FloatingActionButton addFile;
     public Files() {}
@@ -93,30 +97,39 @@ public class Files extends Fragment{
      * fileChooser for the device. Starts an intent that opens the device's file manager
      */
     public void addFile() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-        chooseFile.setType("*/*");
-        startActivityForResult(Intent.createChooser(chooseFile, "Select file"), FILE_SELECT_CODE);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
     @Override
-    public void onActivityResult (int requestCode, int resultCode, Intent resultData) {
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
-        if(requestCode == FILE_SELECT_CODE) {
-            Uri uri = resultData.getData();
-            try {
-                String actualPath = Create_Group.getPath(getContext(), uri);
-                MusicXmlParser parseThis = new MusicXmlParser();
-                parseThis.parser(actualPath);
-                Group_Details activity = (Group_Details) getActivity();
-                if (!filenames.contains(parseThis.title)) {
-                    activity.files.add(parseThis.PartMeasures);
-                    filenames.add(parseThis.title);
-                    arrayAdapter.notifyDataSetChanged();
+        if(requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = null;
+            if(resultData!= null) {
+                try {
+                    String result = readTextFromUri(resultData.getData());
+                    Log.v(TAG, result);
                 }
+                catch (Exception e) {e.printStackTrace();}
             }
-            catch (Exception e) {e.printStackTrace();}
         }
     }
 
+
+    private String readTextFromUri(Uri uri) throws IOException {
+        InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                inputStream));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        reader.close();
+        inputStream.close();
+        return stringBuilder.toString();
+    }
 }

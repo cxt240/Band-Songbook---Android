@@ -3,7 +3,6 @@ package com.example.chris.bandsongbook_android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ import static android.content.ContentValues.TAG;
 
 public class Create_Group extends AppCompatActivity {
 
-    private static final int FILE_SELECT_CODE = 0;
+    private static final int READ_REQUEST_CODE = 42;
     private EditText groupName;
     private Socket socket;
     private ArrayList<ArrayList<PartInfo>> files;
@@ -113,67 +111,42 @@ public class Create_Group extends AppCompatActivity {
         addFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addFile();
+
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                startActivityForResult(intent, READ_REQUEST_CODE);
             }
         });
     }
 
-    /**
-     * fileChooser for the device. Starts an intent that opens the device's file manager
-     */
-    public void addFile() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-        chooseFile.setType("*/*");
-        startActivityForResult(Intent.createChooser(chooseFile, "Select file"), FILE_SELECT_CODE);
-    }
-
-    // from http://stackoverflow.com/questions/7856959/android-file-chooser
-    public static String getPath(Context context, Uri uri) throws URISyntaxException {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
-            Cursor cursor = null;
-
-            try {
-                cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow("_data");
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                // Eat it
-            }
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
-    }
-    /**
-     * gets the result for the filechooser
-     * @param requestCode whether the request was to select a file
-     * @param resultCode whether a file was chosen
-     * @param resultData path to the file
-     */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
-        if(requestCode == FILE_SELECT_CODE) {
-            Uri uri = resultData.getData();
-            try {
-                String actualPath = getPath(getApplicationContext(), uri);
-                MusicXmlParser parseThis = new MusicXmlParser();
-                parseThis.parser(actualPath);
-
-                Log.v(TAG, actualPath);
-                if (!songs.contains(parseThis.title)) {
-                    files.add(parseThis.PartMeasures);
-                    songs.add(parseThis.title);
+        if(requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = null;
+            if(resultData!= null) {
+                try {
+                    String result = readTextFromUri(resultData.getData());
+                    Log.v(TAG, result);
                 }
+                catch (Exception e) {e.printStackTrace();}
             }
-            catch (Exception e) {e.printStackTrace();}
         }
+    }
+
+    private String readTextFromUri(Uri uri) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                inputStream));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        reader.close();
+        inputStream.close();
+        return stringBuilder.toString();
     }
 
     /**
