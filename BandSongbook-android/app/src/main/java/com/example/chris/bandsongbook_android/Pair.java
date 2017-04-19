@@ -4,7 +4,7 @@ package com.example.chris.bandsongbook_android;
  * simple pair class holding the string and the fret for a note
  * @author Chris Tsuei
  */
-public class Pair {
+public class Pair implements Comparable<Pair> {
 
 	public int string;
 	public int fret;
@@ -12,14 +12,11 @@ public class Pair {
 	public Pair(int string, int fret, int time) {
 		this.string = string;
 		this.fret = fret;
+        this.time = time;
 	}
-	
-	/**
-	 * overriding compareTo
-	 * @param compare
-	 * @return
-	 */
-	public int compareTo(Pair compare) {
-		return (this.time - compare.time);
-	}
+
+	public int compareTo(Pair pair2) {
+
+        return this.time - pair2.time;
+    }
 }

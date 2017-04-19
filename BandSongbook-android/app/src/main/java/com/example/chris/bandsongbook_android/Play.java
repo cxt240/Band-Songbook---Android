@@ -59,7 +59,7 @@ public class Play extends AppCompatActivity {
                     parser.parser(songList.get(i));
                     titles.add(parser.title);
                 }
-                String[] fileList = (String[])titles.toArray();
+                String[] fileList = titles.toArray(new String[titles.size()]);
                 fileList = files.toArray(fileList);
 
                 new android.app.AlertDialog.Builder(Play.this)
