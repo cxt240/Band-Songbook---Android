@@ -5,6 +5,7 @@ import javax.xml.parsers.*;
 import java.io.*;
 import java.util.*;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
 public class MusicXmlParser {
 
@@ -25,15 +26,14 @@ public class MusicXmlParser {
 
     /**
      * parses the musicXML filex
-     * @param FilePath
+     * @param xmlString the xmlDocument read as a string
      */
-    public static void parser(String FilePath) {
+    public static void parser(String xmlString) {
         try {
-            File inputFile = new File(FilePath);
-            DocumentBuilderFactory dbFactory
-                    = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputSource is = new InputSource(new StringReader(xmlString));
+            Document doc = builder.parse(is);
             doc.getDocumentElement().normalize();
             Element root = doc.getDocumentElement();
 

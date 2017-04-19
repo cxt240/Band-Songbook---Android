@@ -33,10 +33,12 @@ public class Files extends Fragment{
 
     private ListView fileList;
     public List<String> filenames;
+    public ArrayList<String> XMLSongs;
     public ArrayAdapter<String> arrayAdapter;
     public boolean bandleader = false;
-    private static final int READ_REQUEST_CODE = 42;
 
+    private static final int READ_REQUEST_CODE = 42;
+    public ArrayList<String> xmlSongs;
     public FloatingActionButton addFile;
     public Files() {}
 
@@ -49,6 +51,7 @@ public class Files extends Fragment{
         Group_Details activity = (Group_Details) getActivity();
         bandleader = activity.bandleader;
 
+        XMLSongs = activity.files;
         filenames = activity.songs;
         fileList = (ListView) rootView.findViewById(R.id.file_list);
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
@@ -107,11 +110,19 @@ public class Files extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
         if(requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Uri uri = null;
             if(resultData!= null) {
                 try {
                     String result = readTextFromUri(resultData.getData());
                     Log.v(TAG, result);
+
+                    MusicXmlParser parser = new MusicXmlParser();
+                    parser.parser(result);
+
+                    if(!filenames.contains(parser.title)) {
+                        filenames.add(parser.title);
+                        arrayAdapter.notifyDataSetChanged();
+                        XMLSongs.add(result);
+                    }
                 }
                 catch (Exception e) {e.printStackTrace();}
             }

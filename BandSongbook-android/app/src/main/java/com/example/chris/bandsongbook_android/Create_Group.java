@@ -30,8 +30,8 @@ public class Create_Group extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     private EditText groupName;
     private Socket socket;
-    private ArrayList<ArrayList<PartInfo>> files;
     private ArrayList<String> songs;
+    private ArrayList<String> xmlSongs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,8 @@ public class Create_Group extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__group);
 
-        files = new ArrayList<ArrayList<PartInfo>>();
         songs = new ArrayList<String>();
+        xmlSongs = new ArrayList<String>();
         groupName = (EditText) findViewById(R.id.group_name);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -71,8 +71,8 @@ public class Create_Group extends AppCompatActivity {
                                 // create intent and add params to bundle
                                 Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                                 nextScreen.putExtra("Group Name", group);
-                                nextScreen.putExtra("Files", files);
                                 nextScreen.putExtra("Songs", songs);
+                                nextScreen.putExtra("XML", xmlSongs);
                                 nextScreen.putExtra("Bandleader", true);
 
                                 // Start a the groupDetail activity
@@ -124,11 +124,17 @@ public class Create_Group extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
         if(requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Uri uri = null;
             if(resultData!= null) {
                 try {
                     String result = readTextFromUri(resultData.getData());
                     Log.v(TAG, result);
+
+                    MusicXmlParser parser = new MusicXmlParser();
+                    parser.parser(result);
+                    if(!songs.contains(parser.title)) {
+                        songs.add(parser.title);
+                        xmlSongs.add(result);
+                    }
                 }
                 catch (Exception e) {e.printStackTrace();}
             }
