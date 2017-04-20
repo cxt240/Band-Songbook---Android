@@ -19,6 +19,7 @@ public class Play extends AppCompatActivity {
     public boolean Bandleader = false;
     public int selected = 0;
     public int speed = 0;
+    public int songIndex = 0;
 
     public FloatingActionButton previous;
     public FloatingActionButton rewind2;
@@ -33,7 +34,6 @@ public class Play extends AppCompatActivity {
 
     public TextView SongName;
     public String currentSong;
-
     public MusicPlayer reader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +54,10 @@ public class Play extends AppCompatActivity {
             MusicXmlParser read = new MusicXmlParser();
             read.parser(songList.get(i));
             if(read.title.equals((currentSong))) {
+                songIndex = i;
                 reader.songChanged(songList.get(i), 0);
+                partNames = read.partNames;
             }
-            partNames = read.partNames;
         }
 
         songs = (Button) findViewById(R.id.songs);
@@ -86,7 +87,7 @@ public class Play extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SongName.setText(files.get(selected));
-                                reader.songChanged(songList.get(selected), 0);//TODO part number should be selected one
+                                reader.songChanged(songList.get(selected), 0);
                                 reader.invalidate();
                             }
                         })
@@ -119,7 +120,7 @@ public class Play extends AppCompatActivity {
                                 for(int i = 0; i < select.length;i++) {
                                     if(select[i]) {part = i;};
                                 }
-                                //reader.songChanged();
+                                reader.songChanged(songList.get(songIndex), part);
                             }
                         })
                         .setNegativeButton("Cancel", null)
