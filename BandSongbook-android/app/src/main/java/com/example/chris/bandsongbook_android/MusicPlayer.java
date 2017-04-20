@@ -4,12 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.icu.text.MessagePattern;
 import android.util.AttributeSet;
 import android.view.View;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by Chris on 4/15/2017.

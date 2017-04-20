@@ -14,7 +14,7 @@ public class Measure implements Comparable<Measure>{
 
     public void add(int string, int fret, int time) {
         Pair adder = new Pair(string, fret, time);
-        System.out.println("Measure " + number + " " + string + " " + fret + " " + time);
+     //   System.out.println("Measure " + number + " " + string + " " + fret + " " + time);
         notes.add(adder);
     }
 

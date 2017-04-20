@@ -48,6 +48,7 @@ public class Files extends Fragment{
 
         XMLSongs = activity.files;
         filenames = activity.songs;
+
         fileList = (ListView) rootView.findViewById(R.id.file_list);
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
         fileList.setAdapter(arrayAdapter);

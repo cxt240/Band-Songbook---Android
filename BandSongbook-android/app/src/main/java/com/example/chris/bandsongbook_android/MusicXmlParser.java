@@ -1,10 +1,17 @@
 package com.example.chris.bandsongbook_android;
 
-import javax.xml.parsers.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
+import java.util.ArrayList;
+
+import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MusicXmlParser {
 
@@ -20,21 +27,17 @@ public class MusicXmlParser {
     public static ArrayList<Node> partNodes;
     public static ArrayList<NodeList> MeasureValues;
     public static ArrayList<PartInfo> PartMeasures;
-    public static void main(String[] args) {
-        parser("C:\\Users\\Chris\\Documents\\GitHub\\Band-Songbook---Android\\BandSongbook-android\\app\\src\\main\\java\\com\\example\\chris\\bandsongbook_android\\SampleSongs\\Traditional - Silent Night.xml");
-    }
 
     /**
      * parses the musicXML filex
-     * @param FilePath
+     * @param xmlString xml doc read as string
      */
-    public static void parser(String FilePath) {
+    public static void parser(String xmlString) {
         try {
-            File inputFile = new File(FilePath);
-            DocumentBuilderFactory dbFactory
-                    = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputSource is = new InputSource(new StringReader(xmlString));
+            Document doc = builder.parse(is);
             doc.getDocumentElement().normalize();
             Element root = doc.getDocumentElement();
 

@@ -15,6 +15,7 @@ public class Play extends AppCompatActivity {
 
     public List<String> files;
     public ArrayList<String> songList;
+    public ArrayList<String> partNames;
     public boolean Bandleader = false;
     public int selected = 0;
     public int speed = 0;
@@ -55,7 +56,9 @@ public class Play extends AppCompatActivity {
             if(read.title.equals((currentSong))) {
                 reader.songChanged(songList.get(i), 0);
             }
+            partNames = read.partNames;
         }
+
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +96,37 @@ public class Play extends AppCompatActivity {
         });
 
         options = (Button) findViewById(R.id.options);
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] partList = new String[partNames.size()];
+                partList = partNames.toArray(partList);
+                final boolean select[] = new boolean[partNames.size()];
+                new android.app.AlertDialog.Builder(Play.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Choose Parts")
+                        .setMultiChoiceItems(partList, select, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                select[which] = isChecked;
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int part = 0;
+                                for(int i = 0; i < select.length;i++) {
+                                    if(select[i]) {part = i;};
+                                }
+                                //reader.songChanged();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+
+            }
+        });
 
         previous = (FloatingActionButton) findViewById(R.id.previous);
         previous.setOnClickListener(new View.OnClickListener() {
