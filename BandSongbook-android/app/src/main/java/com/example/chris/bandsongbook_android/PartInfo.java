@@ -1,7 +1,6 @@
 package com.example.chris.bandsongbook_android;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * all of the information needed for a single part
@@ -12,19 +11,16 @@ public class PartInfo {
 	public int lines;
 	public int measures;
 	public String partName;
-	public ArrayList<Pair> notes;
-	
+	public ArrayList<Measure> notes;
+
 	public PartInfo (int lines, int measures, String partName) {
 		this.lines = lines;
 		this.measures = measures;
-		this.partName = partName;		
-		notes = new ArrayList<Pair>();
+		this.partName = partName;
+		notes = new ArrayList<Measure>();
 	}
-	
-	public void add(int string, int fret, int time) {
-		Pair adder = new Pair(string, fret, time);
-		//System.out.println(string + " " + fret + " " + time);
-		notes.add(adder);
-		Collections.sort(notes);
+
+	public void add(Measure measure) {
+		notes.add(measure);
 	}
 }

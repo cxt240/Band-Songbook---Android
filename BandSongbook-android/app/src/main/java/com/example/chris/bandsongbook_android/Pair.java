@@ -12,11 +12,14 @@ public class Pair implements Comparable<Pair> {
 	public Pair(int string, int fret, int time) {
 		this.string = string;
 		this.fret = fret;
-        this.time = time;
 	}
 
-	public int compareTo(Pair pair2) {
-
-        return this.time - pair2.time;
-    }
+	/**
+	 * overriding compareTo
+	 * @param compare
+	 * @return
+	 */
+	public int compareTo(Pair compare) {
+		return (this.time - compare.time);
+	}
 }

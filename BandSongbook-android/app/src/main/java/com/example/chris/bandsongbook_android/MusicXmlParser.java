@@ -1,17 +1,10 @@
 package com.example.chris.bandsongbook_android;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import javax.xml.parsers.*;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.util.*;
+import org.w3c.dom.*;
 
 public class MusicXmlParser {
 
@@ -21,6 +14,7 @@ public class MusicXmlParser {
     public static int measures;
     public static int lines;
     public static int tempo;
+    public static int divisions;
 
     public static ArrayList<String> partNames;
     public static ArrayList<Node> partNodes;
@@ -32,14 +26,15 @@ public class MusicXmlParser {
 
     /**
      * parses the musicXML filex
-     * @param xmlString the xmlDocument read as a string
+     * @param FilePath
      */
-    public static void parser(String xmlString) {
+    public static void parser(String FilePath) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(xmlString));
-            Document doc = builder.parse(is);
+            File inputFile = new File(FilePath);
+            DocumentBuilderFactory dbFactory
+                    = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
             Element root = doc.getDocumentElement();
 
@@ -61,7 +56,6 @@ public class MusicXmlParser {
         PartInfo thisPart = null;
         NodeList fields = part.getChildNodes();
         int measure = 0;
-        int division = 0;
         int time = 0;
         for(int j = 0; j < fields.getLength(); j++) {
             if(fields.item(j).getNodeType() == Node.ELEMENT_NODE) {
@@ -80,7 +74,7 @@ public class MusicXmlParser {
                                         if(attributes.item(k).getNodeType() == Node.ELEMENT_NODE) {
                                             Node current = attributes.item(k);
                                             if(current.getNodeName().equals("divisions")) {
-                                                division = Integer.parseInt(current.getTextContent());
+                                                divisions = Integer.parseInt(current.getTextContent());
                                             }
                                             else if(current.getNodeName().equals("staff-details")) {
                                                 NodeList getDetails = current.getChildNodes();
@@ -109,57 +103,8 @@ public class MusicXmlParser {
                                         }
                                     }
                                     else {
-                                        NodeList notes = attr.item(i).getChildNodes();
-                                        boolean chordFound = false;
-                                        int duration = 0;
-                                        int string = 0, fret = 0;
-                                        for(int k = 0; k < notes.getLength(); k++) {
-                                            if(notes.item(k).getNodeType() == Node.ELEMENT_NODE) {
-                                                if(notes.item(k).getNodeName().equals("duration")){
-                                                    duration = Integer.parseInt(notes.item(k).getTextContent());
-                                                }
-                                                else if(notes.item(k).getNodeName().equals("notations")) {
-                                                    NodeList item = notes.item(k).getChildNodes();
-                                                    for(int z = 0; z < item.getLength(); z++) {
-                                                        if(item.item(z).getNodeType() == Node.ELEMENT_NODE && item.item(z).getNodeName().equals("technical")) {
-                                                            NodeList nextItem = item.item(z).getChildNodes();
-                                                            for(int y = 0; y < nextItem.getLength(); y++ ) {
-                                                                if(nextItem.item(y).getNodeType() == Node.ELEMENT_NODE) {
-                                                                    if(nextItem.item(y).getNodeName().equals("fret")) {
-                                                                        fret = Integer.parseInt(nextItem.item(y).getTextContent());
-                                                                    }
-                                                                    else if (nextItem.item(y).getNodeName().equals("string")) {
-                                                                        string = Integer.parseInt(nextItem.item(y).getTextContent());
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else if(notes.item(k).getNodeType() == Node.ELEMENT_NODE && notes.item(k).getNodeName().equals("chord")) {
-                                                    chordFound = true;
-                                                }
-                                            }
-                                        }
-                                        if(!chordNow) {
-                                            thisPart.add(string, fret, time);
-                                            if(chordFound) {
-                                                chordCurrent = time;
-                                                chordNow = true;
-                                            }
-                                            time += duration;
-                                        }
-                                        else {
-                                            if(chordFound) {
-                                                thisPart.add(string, fret, chordCurrent);
-                                            }
-                                            else {
-                                                thisPart.add(string, fret, time);
-                                                chordNow = false;
-                                                time += duration;
-                                                chordCurrent = time;
-                                            }
-                                        }
+                                        Measure current = filterNotes(fields.item(j).getChildNodes(), 0);
+                                        thisPart.add(current);
                                     }
                                 }
                                 attrCount++;
@@ -167,65 +112,10 @@ public class MusicXmlParser {
                         }
                     }
                     else {
-                        int chordCurrent = time;
-                        boolean chordNow = false;
                         Node first = fields.item(j);
                         NodeList attr = first.getChildNodes();
-                        for(int i = 0; i < attr.getLength(); i++) {
-                            if(attr.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                                NodeList notes = attr.item(i).getChildNodes();
-                                boolean chordFound = false;
-                                int duration = 0;
-                                int string = 0, fret = 0;
-                                for(int k = 0; k < notes.getLength(); k++) {
-                                    if(notes.item(k).getNodeType() == Node.ELEMENT_NODE) {
-                                        if(notes.item(k).getNodeName().equals("duration")){
-                                            duration = Integer.parseInt(notes.item(k).getTextContent());
-                                        }
-                                        else if(notes.item(k).getNodeName().equals("notations")) {
-                                            NodeList item = notes.item(k).getChildNodes();
-                                            for(int z = 0; z < item.getLength(); z++) {
-                                                if(item.item(z).getNodeType() == Node.ELEMENT_NODE && item.item(z).getNodeName().equals("technical")) {
-                                                    NodeList nextItem = item.item(z).getChildNodes();
-                                                    for(int y = 0; y < nextItem.getLength(); y++ ) {
-                                                        if(nextItem.item(y).getNodeType() == Node.ELEMENT_NODE) {
-                                                            if(nextItem.item(y).getNodeName().equals("fret")) {
-                                                                fret = Integer.parseInt(nextItem.item(y).getTextContent());
-                                                            }
-                                                            else if (nextItem.item(y).getNodeName().equals("string")) {
-                                                                string = Integer.parseInt(nextItem.item(y).getTextContent());
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if(notes.item(k).getNodeType() == Node.ELEMENT_NODE && notes.item(k).getNodeName().equals("chord")) {
-                                            chordFound = true;
-                                        }
-                                    }
-                                }
-                                if(!chordNow) {
-                                    thisPart.add(string, fret, time);
-                                    if(chordFound) {
-                                        chordCurrent = time;
-                                        chordNow = true;
-                                    }
-                                    time += duration;
-                                }
-                                else {
-                                    if(chordFound) {
-                                        thisPart.add(string, fret, chordCurrent);
-                                    }
-                                    else {
-                                        thisPart.add(string, fret, time);
-                                        chordNow = false;
-                                        time += duration;
-                                        chordCurrent = time;
-                                    }
-                                }
-                            }
-                        }
+                        Measure currentMeasure = filterNotes(attr, measure);
+                        thisPart.add(currentMeasure);
                     }
                     measure++;
                 }
@@ -235,6 +125,68 @@ public class MusicXmlParser {
         return thisPart;
     }
 
+    public static Measure filterNotes(NodeList e, int measureNumber) {
+        Measure current = new Measure(measureNumber);
+        int chordCurrent = 0;
+        boolean chordNow = false;
+        int time = 0;
+        for(int i = 0; i < e.getLength(); i++) {
+            if(e.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                NodeList notes = e.item(i).getChildNodes();
+                boolean chordFound = false;
+                int duration = 0;
+                int string = 0, fret = 0;
+                for(int k = 0; k < notes.getLength(); k++) {
+                    if(notes.item(k).getNodeType() == Node.ELEMENT_NODE) {
+                        if(notes.item(k).getNodeName().equals("duration")){
+                            duration = Integer.parseInt(notes.item(k).getTextContent());
+                        }
+                        else if(notes.item(k).getNodeName().equals("notations")) {
+                            NodeList item = notes.item(k).getChildNodes();
+                            for(int z = 0; z < item.getLength(); z++) {
+                                if(item.item(z).getNodeType() == Node.ELEMENT_NODE && item.item(z).getNodeName().equals("technical")) {
+                                    NodeList nextItem = item.item(z).getChildNodes();
+                                    for(int y = 0; y < nextItem.getLength(); y++ ) {
+                                        if(nextItem.item(y).getNodeType() == Node.ELEMENT_NODE) {
+                                            if(nextItem.item(y).getNodeName().equals("fret")) {
+                                                fret = Integer.parseInt(nextItem.item(y).getTextContent());
+                                            }
+                                            else if (nextItem.item(y).getNodeName().equals("string")) {
+                                                string = Integer.parseInt(nextItem.item(y).getTextContent());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if(notes.item(k).getNodeType() == Node.ELEMENT_NODE && notes.item(k).getNodeName().equals("chord")) {
+                            chordFound = true;
+                        }
+                    }
+                }
+                if(!chordNow) {
+                    current.add(string, fret, time);
+                    if(chordFound) {
+                        chordCurrent = time;
+                        chordNow = true;
+                    }
+                    time += duration;
+                }
+                else {
+                    if(chordFound) {
+                        current.add(string, fret, chordCurrent);
+                    }
+                    else {
+                        current.add(string, fret, time);
+                        chordNow = false;
+                        time += duration;
+                        chordCurrent = time;
+                    }
+                }
+            }
+        }
+        return null;
+    }
     /**
      * seperates the parts into measures and other info (ex lines in tab)
      * @param root root of the xml file
