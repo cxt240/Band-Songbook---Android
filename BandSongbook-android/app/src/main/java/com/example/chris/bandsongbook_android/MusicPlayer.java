@@ -7,6 +7,9 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * Created by Chris on 4/15/2017.
  */
@@ -15,8 +18,11 @@ public class MusicPlayer extends View{
 
     public static int current;
     public static int current_end;
+    public static int divisions;
+    public static int measure;
     public static int height;
     public static int width;
+    public static double divSeconds;
     public static double[] lines;
     private Paint paint;
 
@@ -25,8 +31,6 @@ public class MusicPlayer extends View{
     public MusicPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
-        current = -1000;
-        current_end = 2000;
     }
 
     @Override
@@ -69,6 +73,9 @@ public class MusicPlayer extends View{
                     lines[linesAbove] =  (height_below + (25 * i));
                 }
             }
+
+            ArrayList<Measure> display = display();
+
         }
         
     }
@@ -89,7 +96,29 @@ public class MusicPlayer extends View{
         parser.parser(s);
         PartMeasures = parser.PartMeasures.get(PartNo);
         lines = new double[PartMeasures.lines];
-        current = -1000;
-        current_end = 2000;
+        measure = parser.measures;
+        divisions = parser.divisions;
+        divSeconds = divisions * (parser.tempo / 60);
+        current_end = divisions * 2;
+        current = -1 * divisions;
+    }
+
+    public static ArrayList<Measure> display() {
+        int currMeasure = current - (current % divisions);
+        int endMeasure = (int) Math.ceil(current_end / divisions);
+        ArrayList<Measure> display = new ArrayList<Measure>();
+        for(int i = 0; i < PartInfo.notes.size(); i++) {
+            Measure current = PartInfo.notes.get(i);
+            if(current.number > currMeasure && current.number < endMeasure) {
+                display.add(PartInfo.notes.get(i));
+            }
+        }
+        return display;
+    }
+
+    public static void speedChanged(int speed) {
+        if(speed == 2) {
+
+        }
     }
 }

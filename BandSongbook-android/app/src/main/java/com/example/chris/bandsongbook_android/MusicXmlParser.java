@@ -188,7 +188,7 @@ public class MusicXmlParser {
                 }
             }
         }
-        return null;
+        return current;
     }
     /**
      * seperates the parts into measures and other info (ex lines in tab)

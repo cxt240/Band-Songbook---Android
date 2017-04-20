@@ -11,7 +11,7 @@ public class PartInfo {
 	public int lines;
 	public int measures;
 	public String partName;
-	public ArrayList<Measure> notes;
+	public static ArrayList<Measure> notes;
 
 	public PartInfo (int lines, int measures, String partName) {
 		this.lines = lines;
