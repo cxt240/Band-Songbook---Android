@@ -79,14 +79,22 @@ public class MusicPlayer extends View{
 //                    canvas.drawText(Integer.toString(linesAbove + i), width/2, (int)(height_below + (100 * i)), paint);
                 }
             }
-//
-//            ArrayList<Measure> display = display();
-//            for(int i = 0; i < display.size(); i++) {
-//                Measure draw = display.get(i);
-//                for(int j = 0; j < draw.notes.size(); j++) {
-//                    int horizontal = 0;
-//                }
-//            }
+
+            ArrayList<Measure> display = display();
+            for(int i = 0; i < display.size(); i++) {
+                Measure draw = display.get(i);
+                int measure_time = draw.number * divisions;
+                int line = (pixels * (measure_time - current));
+                canvas.drawLine(line, 0, line, height, paint);
+                for(int j = 0; j < draw.notes.size(); j++) {
+                    int time = (measure_time) + draw.notes.get(j).time;
+                    if(time > current && time < current_end) {
+                        int string = draw.notes.get(j).string - 1;
+                        int fret = draw.notes.get(j).fret;
+                        canvas.drawText(Integer.toString(fret), (int)(pixels * (time - current)), (float)lines[string], paint);
+                    }
+                }
+            }
         }
         
     }
@@ -107,8 +115,12 @@ public class MusicPlayer extends View{
         parser.parser(s);
         PartMeasures = parser.PartMeasures.get(PartNo);
         lines = new double[PartMeasures.lines];
+
+        // infornation from the MusicXml header
         measure = parser.measures;
         divisions = parser.divisions;
+
+        // setting up the player from the beginning
         divSeconds = divisions * (parser.tempo / 60);
         current_end = divisions * 2;
         current = -1 * divisions;
