@@ -22,6 +22,7 @@ public class MusicPlayer extends View{
     public static int measure;
     public static int height;
     public static int width;
+    public static int pixels;
     public static double divSeconds;
     public static double[] lines;
     private Paint paint;
@@ -40,6 +41,7 @@ public class MusicPlayer extends View{
         // red "current" line
         paint.setColor(Color.RED);
         paint.setStrokeWidth(10);
+        paint.setTextSize(42);
         canvas.drawLine(width/3, 0, width/3, height, paint);
         paint.setColor(Color.BLACK);
         if(PartMeasures != null) {
@@ -52,11 +54,13 @@ public class MusicPlayer extends View{
                 lines[linesAbove] = (double)height / 2;
                 for(int i = 1; i < linesAbove + 1; i++) { //drawing above the middle line
                     canvas.drawLine(0, (height / 2 - (100 * i)), width, (height / 2 - (100 * i)), paint);
-                    lines[linesAbove - i] = (height / 2 - (25 * i));
+                   // canvas.drawText(Integer.toString(linesAbove - i), width/2, (int)(height / 2 - (100 * i)), paint);
+                    lines[linesAbove - i - 1] = (height / 2 - (100 * i));
                 }
                 for (int i = 1; i < linesAbove + 1; i++) {
                     canvas.drawLine(0, (height / 2 + (100 * i)), width, (height / 2 + (100 * i)), paint);
-                    lines[linesAbove + i] = (double)(height / 2 + (25 * i));
+                    //canvas.drawText(Integer.toString(linesAbove + i), width/2, (int)(height / 2 + (100 * i)), paint);
+                    lines[linesAbove + i] = (double)(height / 2 + (100 * i));
                 }
             }
             else {
@@ -66,16 +70,23 @@ public class MusicPlayer extends View{
                 double height_below = height / 2 + 50;
                 for(int i = 0; i < linesAbove; i++) {
                     canvas.drawLine(0, (float)(height_above - (100 * i)), width, (float)(height_above - (100 * i)), paint);
-                    lines[linesAbove - i] =  (height_above - (25 * i));
+//                    canvas.drawText(Integer.toString(linesAbove - i -1), width/2, (int)(height_above - (100 * i)), paint);
+                    lines[linesAbove - i - 1] =  (height_above - (100 * i));
                 }
                 for(int i = 0; i < linesAbove; i++) {
                     canvas.drawLine(0, (float)(height_below + (100 * i)), width, (float)(height_below + (100 * i)), paint);
-                    lines[linesAbove] =  (height_below + (25 * i));
+                    lines[linesAbove + i] =  (height_below + (100 * i));
+//                    canvas.drawText(Integer.toString(linesAbove + i), width/2, (int)(height_below + (100 * i)), paint);
                 }
             }
-
-            ArrayList<Measure> display = display();
-
+//
+//            ArrayList<Measure> display = display();
+//            for(int i = 0; i < display.size(); i++) {
+//                Measure draw = display.get(i);
+//                for(int j = 0; j < draw.notes.size(); j++) {
+//                    int horizontal = 0;
+//                }
+//            }
         }
         
     }
@@ -101,6 +112,7 @@ public class MusicPlayer extends View{
         divSeconds = divisions * (parser.tempo / 60);
         current_end = divisions * 2;
         current = -1 * divisions;
+        pixels = width / (3 * divisions);
     }
 
     public static ArrayList<Measure> display() {
