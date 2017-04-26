@@ -81,11 +81,10 @@ public class MusicPlayer extends View{
 //                    canvas.drawText(Integer.toString(linesAbove + i), width/2, (int)(height_below + (100 * i)), paint);
                 }
             }
+
+            paint.setColor(Color.GRAY);
             int pixels = width / 3;
             ArrayList<Measure> display = display();
-            Log.v("divisions", divisions + " ");
-            Log.v("size", width + " " + height);
-            Log.v("pixels", pixels + " ");
             for(int i = 0; i < display.size(); i++) {
                 Measure draw = display.get(i);
                 int measure_time = divisions * i;
@@ -94,14 +93,14 @@ public class MusicPlayer extends View{
                 Log.v("time: ", measure_time + " " + i);
                 Log.v("size: ", " " + line + " " + i + " ");
 
-//                for(int j = 0; j < draw.notes.size(); j++) {
-//                    int time = (measure_time) + draw.notes.get(j).time;
-//                    if(time > current && time < current_end) {
-//                        int string = draw.notes.get(j).string - 1;
-//                        int fret = draw.notes.get(j).fret;
-//                        canvas.drawText(Integer.toString(fret), (int)(pixels * (time - current)), (float)lines[string], paint);
-//                    }
-//                }
+                for(int j = 0; j < draw.notes.size(); j++) {
+                    int time = (measure_time) + draw.notes.get(j).time;
+                    if(time > current && time < current_end) {
+                        int string = draw.notes.get(j).string;
+                        int fret = draw.notes.get(j).fret;
+                        canvas.drawText(Integer.toString(fret), (int)(pixels * (time - current)), (float)lines[string], paint);
+                    }
+                }
             }
         }
         

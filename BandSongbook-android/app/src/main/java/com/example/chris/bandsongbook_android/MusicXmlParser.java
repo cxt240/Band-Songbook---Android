@@ -121,8 +121,9 @@ public class MusicXmlParser {
                                         }
                                     }
                                     else {
-                                        Measure current = filterNotes(fields.item(j).getChildNodes(), measure);
+                                        Measure current = filterNotes(fields.item(j).getChildNodes(), measure + 1);
                                         thisPart.add(current);
+                                        measure++;
                                     }
                                 }
                                 attrCount++;
@@ -132,7 +133,7 @@ public class MusicXmlParser {
                     else {
                         Node first = fields.item(j);
                         NodeList attr = first.getChildNodes();
-                        Measure currentMeasure = filterNotes(attr, measure);
+                        Measure currentMeasure = filterNotes(attr, measure + 1);
                         thisPart.add(currentMeasure);
                     }
                     measure++;
