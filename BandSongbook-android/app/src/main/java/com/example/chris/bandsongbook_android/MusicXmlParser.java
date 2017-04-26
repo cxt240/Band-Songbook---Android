@@ -22,6 +22,8 @@ public class MusicXmlParser {
     public static int lines;
     public static int tempo;
     public static int divisions;
+    public static int num;
+    public static int denom;
 
     public static ArrayList<String> partNames;
     public static ArrayList<Node> partNodes;
@@ -79,6 +81,19 @@ public class MusicXmlParser {
                                             if(current.getNodeName().equals("divisions")) {
                                                 divisions = Integer.parseInt(current.getTextContent());
                                             }
+                                            else if (current.getNodeName().equals("time")) {
+                                                NodeList getDetails = current.getChildNodes();
+                                                for(int z = 0; z < getDetails.getLength(); z++) {
+                                                    if(getDetails.item(z).getNodeType() == Node.ELEMENT_NODE) {
+                                                        if(getDetails.item(z).getNodeName().equals("beats")) {
+                                                            num = Integer.parseInt(getDetails.item(z).getTextContent());
+                                                        }
+                                                        else if(getDetails.item(z).getNodeName().equals("beat-type")) {
+                                                            denom = Integer.parseInt(getDetails.item(z).getTextContent());
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             else if(current.getNodeName().equals("staff-details")) {
                                                 NodeList getDetails = current.getChildNodes();
                                                 for(int z = 0; z < getDetails.getLength(); z++) {
@@ -106,7 +121,7 @@ public class MusicXmlParser {
                                         }
                                     }
                                     else {
-                                        Measure current = filterNotes(fields.item(j).getChildNodes(), 0);
+                                        Measure current = filterNotes(fields.item(j).getChildNodes(), measure);
                                         thisPart.add(current);
                                     }
                                 }
