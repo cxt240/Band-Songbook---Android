@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -32,7 +33,6 @@ public class Main extends Activity {
     private EditText name;
     private EditText groupCode;
     private boolean connected;
-    private Socket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +109,7 @@ public class Main extends Activity {
             }
         });
 
+        test();
     }
 
     /**
@@ -148,46 +149,58 @@ public class Main extends Activity {
         return joinGroup;
     }
 
-    /**
-     * sends a packet following protocols to the server
-     * @param jsonObject create group packet to be sent
-     * @throws IOException if there is no valid connection
-     */
-    public void send (JSONObject jsonObject) throws IOException {
-        OutputStream out = socket.getOutputStream();
-
-        // converting the packet to utf-8 bytes (adding a newline char to conform to protocol)
-        JSONObject packet = jsonObject;
-        String serializePacket = packet.toString();
-        StringBuilder frankenstein = new StringBuilder(serializePacket);
-        frankenstein.append('\n');
-
-        byte[] pack2 = frankenstein.toString().getBytes(StandardCharsets.UTF_8);
-
-        // sends packet to server
-        out.write(pack2);
-        out.flush();
-    }
-
-    /**
-     * receive a JSON from the server
-     * @return the read JSON packet
-     * @throws IOException if invalid response
-     */
-    public JSONObject receiveJson() throws IOException {
-
-        InputStreamReader receive = new InputStreamReader(socket.getInputStream());
-        BufferedReader receiver = new BufferedReader(receive);
-        JSONObject packet = null;
-
+    public static void test()
+    {
         try {
-            packet = new JSONObject(receiver.readLine());
-        }
-        catch (Exception e) {
 
+            Client client = new Client();
+            // construct create group JSON
+            JSONObject startGroup = new JSONObject();
+            try {
+                startGroup.put("request", "create group");
+                startGroup.put("group name", "The Black Keys");
+                startGroup.put("user name", "John Bandleader");
+            }
+            catch (JSONException e) {
+                // fail("Should have been able to create json");
+
+                Log.v("out","JSONERROR");
+            }
+            client.send(startGroup);
+            // we sent the start group message.
+            // it will take some time for the message to propagate.
+            // we can use the non blocking recieveJson to wait for the response.
+            JSONObject recv = null;
+            double waitTime = 0;
+            while(recv == null)
+            {
+                recv = client.receiveJson();
+                waitTime += 0.001;
+                Thread.sleep(1);
+            }
+            Log.v("out","Recvd message after" + waitTime + "seconds");
+            Log.v("out",recv.getString("response"));
+            client.close();
+
+            //recv error now
+
+        } catch (IOException e) {
+            Log.v("out","IOERROR");
+            Log.v("out",e.getMessage());
             e.printStackTrace();
+            //fail("Client crashed- it should not have.");
+        }
+        catch (InterruptedException e) {
+            Log.v("out","INTERRUPTERROR");
+            //  fail("Wait was interrputed- this should not happen");
         }
 
-        return packet;
+        catch (JSONException e) {
+        // fail("Server sent invalid JSON");
+         }
+
+        Log.v("out","finish");
+
     }
+
 }
