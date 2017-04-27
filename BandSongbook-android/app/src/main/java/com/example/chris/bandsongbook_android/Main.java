@@ -33,6 +33,7 @@ public class Main extends Activity {
     private EditText name;
     private EditText groupCode;
     private boolean connected;
+    public Client client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,39 +66,45 @@ public class Main extends Activity {
                 String group = groupCode.getText().toString();
                 String userName = name.getText().toString();
                 if(isNetworkAvailable()) {
-
                     try {
-//                        // connecting to server
-//                        socket = new Socket("34.197.242.214", 54106);
-//                        String member = name.getText().toString();
-//
-//                        // sending a JSON and receiving the response
-//                        JSONObject joiner = join(group, userName);
-//                        send(joiner);
-//                        JSONObject response = receiveJson();
-//
-//                        String status = response.getString("response");
-//                        if(status.equals("ok")) {
+                        client = new Client();
+                        // connecting to server
+                        String member = name.getText().toString();
+                        JSONObject join = join(group, userName);
+                        client.send(join);
+
+                        JSONObject recv = null;
+                        double waitTime = 0;
+                        while(recv == null)
+                        {
+                            recv = client.receiveJson();
+                            waitTime += 0.001;
+                            Thread.sleep(1);
+                        }
+
+                        String status = recv.getString("response");
+                        if(status.equals("ok")) {
                             Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                             nextScreen.putExtra("Group Name", group);
                             nextScreen.putExtra("Name", userName);
+                            nextScreen.putExtra("Bandleader", false);
                             startActivity(nextScreen);
                             Log.v("Group Status", "Joined");
-//                        }
-//                        else {
-//                            Context context = getApplicationContext();
-//                            int duration = Toast.LENGTH_SHORT;
-//                            Toast.makeText(context, status, duration);
-//                        }
+                        }
+                        else {
+                            Context context = getApplicationContext();
+                           int duration = Toast.LENGTH_SHORT;
+                            Toast.makeText(context, status, duration);
+                        }
                     }
                     catch (Exception e) {
                         e.printStackTrace();
                     }
                     finally {
-//                        try {
-//                            socket.close();
-//                        }
-//                        catch (Exception e) {      }
+                        try {
+                            client.close();
+                        }
+                        catch (Exception e) {      }
                     }
                 }
                 else {
@@ -108,8 +115,6 @@ public class Main extends Activity {
                 }
             }
         });
-
-        test();
     }
 
     /**

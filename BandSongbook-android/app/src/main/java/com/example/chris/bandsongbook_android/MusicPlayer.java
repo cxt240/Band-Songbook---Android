@@ -102,15 +102,13 @@ public class MusicPlayer extends View{
 
                 for(int j = 0; j < draw.notes.size(); j++) {
                     double time = measure_time + draw.notes.get(j).time;
-                    if(time > current && time < current_end) {
-                        int string = draw.notes.get(j).string;
-                        int fret = draw.notes.get(j).fret;
-                        double distance = time - current;
-                        double spot = (double) (distance / (3 * divisions)) * width;
-                        Log.v("info: ", fret + " " + string + " " + time);
-                        paint.setColor(Color.BLACK);
-                        canvas.drawText(Integer.toString(fret), (int) spot, (float)lines[string], paint);
-                    }
+                    int string = draw.notes.get(j).string;
+                    int fret = draw.notes.get(j).fret;
+                    double distance = time - current;
+                    double spot = (double) (distance / (3 * divisions)) * width;
+                    Log.v("info: ", fret + " " + string + " " + time);
+                    paint.setColor(Color.BLACK);
+                    canvas.drawText(Integer.toString(fret), (int) spot, (float)lines[string], paint);
                 }
             }
         }
@@ -121,7 +119,6 @@ public class MusicPlayer extends View{
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         this.width = w;
         this.height = h;
-        Log.v(TAG, w + " " + h);
         super.onSizeChanged(w, h, oldw, oldh);
     }
     public void updateView() {
@@ -137,7 +134,7 @@ public class MusicPlayer extends View{
 
         // information from the MusicXml header
         measure = parser.measures;
-        divisions = parser.num * parser.divisions * (4 / parser.denom);
+        divisions = (parser.num + 1) * parser.divisions * (4 / parser.denom);
 
         // setting up the player from the beginning
         divSeconds = divisions * (parser.tempo / 60);
