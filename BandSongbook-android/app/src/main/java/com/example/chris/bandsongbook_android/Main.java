@@ -62,7 +62,7 @@ public class Main extends Activity {
                 String userName = name.getText().toString();
                 if(isNetworkAvailable()) {
                     try {
-                        client = new Client();
+                        Client client = new Client();
                         // connecting to server
                         String member = name.getText().toString();
                         JSONObject join = join(group, userName);

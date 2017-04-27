@@ -3,6 +3,7 @@ package com.example.chris.bandsongbook_android;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +57,17 @@ public class Play extends AppCompatActivity {
         reader.songChanged(currentSong, 0, getApplicationContext());
         partNames = read.partNames;
 
+        final Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                reader.current += reader.divSeconds * 0.01;
+                reader.current_end += reader.divSeconds * 0.01;
+                reader.invalidate();
+                handler.postDelayed(this, 100);
+            }
+        };
+        handler.postDelayed(r, 100);
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +93,7 @@ public class Play extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SongName.setText(files.get(selected));
-
+                                speed = 0;
                                 reader.invalidate();
                             }
                         })
@@ -114,6 +126,7 @@ public class Play extends AppCompatActivity {
                                 for(int i = 0; i < select.length;i++) {
                                     if(select[i]) {part = i;};
                                 }
+                                speed = 0;
                                 reader.songChanged(currentSong, part, getApplicationContext());
                             }
                         })

@@ -146,7 +146,7 @@ public class MusicPlayer extends View{
     }
 
     public static ArrayList<Measure> display() {
-        double currMeasure = current - (current % divisions);
+        double currMeasure = current / divisions;
         double endMeasure = (int) Math.ceil(current_end / divisions);
         ArrayList<Measure> display = new ArrayList<Measure>();
         for(int i = 0; i < PartInfo.notes.size(); i++) {
