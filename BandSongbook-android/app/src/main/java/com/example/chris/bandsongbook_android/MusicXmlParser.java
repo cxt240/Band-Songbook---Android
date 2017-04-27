@@ -7,10 +7,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import java.io.*;
+import java.io.StringReader;
 import java.util.ArrayList;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MusicXmlParser {

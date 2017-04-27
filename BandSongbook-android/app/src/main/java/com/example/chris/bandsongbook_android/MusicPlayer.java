@@ -9,9 +9,6 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.Collections;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Chris on 4/15/2017.
