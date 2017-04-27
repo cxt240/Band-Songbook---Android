@@ -19,9 +19,9 @@ import static android.content.ContentValues.TAG;
 
 public class MusicPlayer extends View{
 
-    public static int current;
-    public static int current_end;
-    public static int divisions;
+    public static double current;
+    public static double current_end;
+    public static double divisions;
     public static int measure;
     public static int height;
     public static int width;
@@ -43,7 +43,7 @@ public class MusicPlayer extends View{
         // red "current" line
         paint.setColor(Color.RED);
         paint.setStrokeWidth(10);
-        paint.setTextSize(42);
+        paint.setTextSize(50);
         canvas.drawLine(width/3, 0, width/3, height, paint);
         paint.setColor(Color.BLACK);
         if(PartMeasures != null) {
@@ -82,23 +82,34 @@ public class MusicPlayer extends View{
                 }
             }
 
-            paint.setColor(Color.GRAY);
             int pixels = width / 3;
             ArrayList<Measure> display = display();
+            Log.v("times: ", current + " " + current_end);
+            Log.v("dim: ", height + " " + width);
             for(int i = 0; i < display.size(); i++) {
                 Measure draw = display.get(i);
-                int measure_time = divisions * i;
-                int line = (int)(pixels * i);
-                canvas.drawLine(line, 0, line, height, paint);
-                Log.v("time: ", measure_time + " " + i);
-                Log.v("size: ", " " + line + " " + i + " ");
+
+                double measure_time = divisions * draw.number;
+                if (measure_time > current && measure_time < current_end) {
+                    paint.setColor(Color.GRAY);
+                    double distance = measure_time - current;
+                    double line = (distance / (3 * divisions));
+                    int y = (int)(line * width);
+                    canvas.drawLine(y, 0, y, height, paint);
+                    Log.v("time: ", measure_time + " " + i);
+                    Log.v("size: ", " " + line + " " + distance + " ");
+                }
 
                 for(int j = 0; j < draw.notes.size(); j++) {
-                    int time = (measure_time) + draw.notes.get(j).time;
+                    double time = measure_time + draw.notes.get(j).time;
                     if(time > current && time < current_end) {
                         int string = draw.notes.get(j).string;
                         int fret = draw.notes.get(j).fret;
-                        canvas.drawText(Integer.toString(fret), (int)(pixels * (time - current)), (float)lines[string], paint);
+                        double distance = time - current;
+                        double spot = (double) (distance / (3 * divisions)) * width;
+                        Log.v("info: ", fret + " " + string + " " + time);
+                        paint.setColor(Color.BLACK);
+                        canvas.drawText(Integer.toString(fret), (int) spot, (float)lines[string], paint);
                     }
                 }
             }
@@ -124,19 +135,19 @@ public class MusicPlayer extends View{
         PartMeasures = parser.PartMeasures.get(PartNo);
         lines = new double[PartMeasures.lines];
 
-        // infornation from the MusicXml header
+        // information from the MusicXml header
         measure = parser.measures;
         divisions = parser.num * parser.divisions * (4 / parser.denom);
 
         // setting up the player from the beginning
         divSeconds = divisions * (parser.tempo / 60);
         current_end = divisions * 2;
-        current = -1 * divisions;
+        current = divisions * -1;
     }
 
     public static ArrayList<Measure> display() {
-        int currMeasure = current - (current % divisions);
-        int endMeasure = (int) Math.ceil(current_end / divisions);
+        double currMeasure = current - (current % divisions);
+        double endMeasure = (int) Math.ceil(current_end / divisions);
         ArrayList<Measure> display = new ArrayList<Measure>();
         for(int i = 0; i < PartInfo.notes.size(); i++) {
             Measure current = PartInfo.notes.get(i);
@@ -145,11 +156,5 @@ public class MusicPlayer extends View{
             }
         }
         return display;
-    }
-
-    public static void speedChanged(int speed) {
-        if(speed == 2) {
-
-        }
     }
 }
