@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,7 +31,6 @@ public class Files extends Fragment{
 
     private ListView fileList;
     public List<String> filenames;
-    public ArrayList<String> XMLSongs;
     public ArrayAdapter<String> arrayAdapter;
     public boolean bandleader = false;
 
@@ -46,7 +47,6 @@ public class Files extends Fragment{
         Group_Details activity = (Group_Details) getActivity();
         bandleader = activity.bandleader;
 
-        XMLSongs = activity.files;
         filenames = activity.songs;
 
         fileList = (ListView) rootView.findViewById(R.id.file_list);
@@ -69,7 +69,6 @@ public class Files extends Fragment{
                                 Intent play = new Intent(getContext(), Play.class);
                                 play.putExtra("Songs", new ArrayList<String>(filenames));
                                 play.putExtra("Bandleader", bandleader);
-                                play.putExtra("XML", XMLSongs);
                                 play.putExtra("Play", filenames.get(position));
                                 startActivity(play);
                             }
@@ -118,7 +117,11 @@ public class Files extends Fragment{
                     if(!filenames.contains(parser.title)) {
                         filenames.add(parser.title);
                         arrayAdapter.notifyDataSetChanged();
-                        XMLSongs.add(result);
+
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(parser.title, result);
+                        editor.commit();
                     }
                 }
                 catch (Exception e) {e.printStackTrace();}

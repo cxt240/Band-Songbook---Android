@@ -3,11 +3,13 @@ package com.example.chris.bandsongbook_android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,7 +34,6 @@ public class Create_Group extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     private EditText groupName;
     private ArrayList<String> songs;
-    private ArrayList<String> xmlSongs;
     public Client client;
 
     @Override
@@ -46,7 +47,6 @@ public class Create_Group extends AppCompatActivity {
         setContentView(R.layout.activity_create__group);
 
         songs = new ArrayList<String>();
-        xmlSongs = new ArrayList<String>();
         groupName = (EditText) findViewById(R.id.group_name);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -79,7 +79,6 @@ public class Create_Group extends AppCompatActivity {
                             Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
                             nextScreen.putExtra("Group Name", group);
                             nextScreen.putExtra("Songs", songs);
-                            nextScreen.putExtra("XML", xmlSongs);
                             nextScreen.putExtra("Bandleader", true);
 
                             // Start a the groupDetail activity
@@ -134,7 +133,11 @@ public class Create_Group extends AppCompatActivity {
                     parser.parser(result);
                     if(!songs.contains(parser.title)) {
                         songs.add(parser.title);
-                        xmlSongs.add(result);
+
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(parser.title, result);
+                        editor.commit();
                     }
                 }
                 catch (Exception e) {e.printStackTrace();}

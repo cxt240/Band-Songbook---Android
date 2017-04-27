@@ -1,7 +1,9 @@
 package com.example.chris.bandsongbook_android;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,12 +16,10 @@ import java.util.List;
 public class Play extends AppCompatActivity {
 
     public List<String> files;
-    public ArrayList<String> songList;
     public ArrayList<String> partNames;
     public boolean Bandleader = false;
     public int selected = 0;
     public int speed = 0;
-    public int songIndex = 0;
 
     public FloatingActionButton previous;
     public FloatingActionButton rewind2;
@@ -44,31 +44,25 @@ public class Play extends AppCompatActivity {
         Bandleader = extras.getBoolean("Bandleader");
         files = extras.getStringArrayList("Songs");
         currentSong = extras.getString("Play");
-        songList = extras.getStringArrayList("XML");
 
         reader = (MusicPlayer) findViewById(R.id.musicPlayer);
         SongName = (TextView) findViewById(R.id.SongName);
         SongName.setText(currentSong);
 
-        for(int i = 0; i < songList.size(); i++) {
-            MusicXmlParser read = new MusicXmlParser();
-            read.parser(songList.get(i));
-            if(read.title.equals((currentSong))) {
-                songIndex = i;
-                reader.songChanged(songList.get(i), 0);
-                partNames = read.partNames;
-            }
-        }
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String xmlString = sharedPref.getString(currentSong, "Not available");
+        MusicXmlParser read = new MusicXmlParser();
+        read.parser(xmlString);
+        reader.songChanged(currentSong, 0, getApplicationContext());
+        partNames = read.partNames;
 
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final ArrayList<String> titles = new ArrayList<String>();
-                for(int i = 0; i < songList.size(); i++) {
-                    MusicXmlParser parser = new MusicXmlParser();
-                    parser.parser(songList.get(i));
-                    titles.add(parser.title);
+                for(int i = 0; i < files.size(); i++) {
+                    files.get(i);
                 }
                 String[] fileList = titles.toArray(new String[titles.size()]);
                 fileList = files.toArray(fileList);
@@ -87,7 +81,7 @@ public class Play extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SongName.setText(files.get(selected));
-                                reader.songChanged(songList.get(selected), 0);
+
                                 reader.invalidate();
                             }
                         })
@@ -120,7 +114,7 @@ public class Play extends AppCompatActivity {
                                 for(int i = 0; i < select.length;i++) {
                                     if(select[i]) {part = i;};
                                 }
-                                reader.songChanged(songList.get(songIndex), part);
+                                reader.songChanged(currentSong, part, getApplicationContext());
                             }
                         })
                         .setNegativeButton("Cancel", null)

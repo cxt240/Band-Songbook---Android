@@ -18,7 +18,6 @@ public class Group_Details extends AppCompatActivity {
 
     public String GroupName;
     public Boolean bandleader;
-    public ArrayList<String> files;
     public ArrayList<String> songs;
     public ArrayList<String> members;
 
@@ -48,13 +47,11 @@ public class Group_Details extends AppCompatActivity {
 
 
         if(bandleader) {
-            files = field.getStringArrayList("XML");
             songs = field.getStringArrayList("Songs");
             members = new ArrayList<String>();
             members.add("Bandleader");
         }
         else  {
-            files = new ArrayList<String>();
             songs = new ArrayList<String>();
             members = new ArrayList<String>();
             members.add("Bandleader");

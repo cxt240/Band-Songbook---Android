@@ -1,14 +1,18 @@
 package com.example.chris.bandsongbook_android;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Chris on 4/15/2017.
@@ -25,7 +29,6 @@ public class MusicPlayer extends View{
     public static double divSeconds;
     public static double[] lines;
     private Paint paint;
-
     public static PartInfo PartMeasures;
 
     public MusicPlayer(Context context, AttributeSet attrs) {
@@ -122,10 +125,13 @@ public class MusicPlayer extends View{
         invalidate(); // redraws the view calling onDraw()
     }
 
-    public static void songChanged(String s, int PartNo) {
+    public static void songChanged(String s, int PartNo, Context context) {
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.v(TAG, s);
+        String xmlString = sharedPref.getString(s, "Not available");
         MusicXmlParser parser = new MusicXmlParser();
-        parser.parser(s);
+        parser.parser(xmlString);
         PartMeasures = parser.PartMeasures.get(PartNo);
         lines = new double[PartMeasures.lines];
 
