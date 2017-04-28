@@ -59,6 +59,7 @@ public class Create_Group extends AppCompatActivity {
                     try {
                         // connecting to server
                         client = new Client();
+                        SocketHolder.setClient(client);
 
                         // Protocol for creating a new group
                         JSONObject create = start(group);
@@ -86,13 +87,12 @@ public class Create_Group extends AppCompatActivity {
                             Log.v("Group Status", "Created");
                         }
                         else {
-                                Log.v("Group", "Failed Join");
-                                Context context = getApplicationContext();
-                                int duration = Toast.LENGTH_SHORT;
-                                Toast.makeText(context, status, duration);
+                            Log.v("Group", "Failed Join");
+                            Context context = getApplicationContext();
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast.makeText(context, status, duration);
+                            client.close();
                         }
-
-                        client.close();
                     }
                     catch (Exception e) {
                         e.printStackTrace();

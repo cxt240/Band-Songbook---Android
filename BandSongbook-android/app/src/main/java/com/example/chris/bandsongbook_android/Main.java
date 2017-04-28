@@ -63,8 +63,9 @@ public class Main extends Activity {
                 if(isNetworkAvailable()) {
                     try {
                         Client client = new Client();
+                        SocketHolder.setClient(client);
+
                         // connecting to server
-                        String member = name.getText().toString();
                         JSONObject join = join(group, userName);
                         client.send(join);
 
@@ -88,18 +89,13 @@ public class Main extends Activity {
                         }
                         else {
                             Context context = getApplicationContext();
-                           int duration = Toast.LENGTH_SHORT;
+                            int duration = Toast.LENGTH_SHORT;
                             Toast.makeText(context, status, duration);
+                            client.close();
                         }
                     }
                     catch (Exception e) {
                         e.printStackTrace();
-                    }
-                    finally {
-                        try {
-                            client.close();
-                        }
-                        catch (Exception e) {      }
                     }
                 }
                 else {

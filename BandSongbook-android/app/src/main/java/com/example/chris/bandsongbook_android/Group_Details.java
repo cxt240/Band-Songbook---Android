@@ -45,7 +45,6 @@ public class Group_Details extends AppCompatActivity {
         GroupName = field.getString("Group Name");
         bandleader = field.getBoolean("Bandleader");
 
-
         if(bandleader) {
             songs = field.getStringArrayList("Songs");
             members = new ArrayList<String>();
@@ -56,7 +55,6 @@ public class Group_Details extends AppCompatActivity {
             members = new ArrayList<String>();
             members.add("Bandleader");
             members.add(field.getString("Name"));
-            // TODO: receive the S1 fragment and assign fields from there.
         }
         setContentView(R.layout.activity_group__details);
 
@@ -107,6 +105,8 @@ public class Group_Details extends AppCompatActivity {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Client current = SocketHolder.getClient();
+                        current.close();
                         System.exit(0);
                     }
                 })
