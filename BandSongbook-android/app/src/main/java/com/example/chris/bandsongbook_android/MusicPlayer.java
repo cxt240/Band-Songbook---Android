@@ -105,7 +105,7 @@ public class MusicPlayer extends View{
                     int string = draw.notes.get(j).string;
                     int fret = draw.notes.get(j).fret;
                     double distance = time - current;
-                    double spot = (double) (distance / (3 * divisions)) * width;
+                    double spot = (distance / (3 * divisions)) * (double) width;
                     Log.v("info: ", fret + " " + string + " " + time);
                     paint.setColor(Color.BLACK);
                     canvas.drawText(Integer.toString(fret), (int) spot, (float)lines[string], paint);
@@ -146,7 +146,7 @@ public class MusicPlayer extends View{
     }
 
     public static ArrayList<Measure> display() {
-        double currMeasure = current / divisions;
+        int currMeasure = (int) (current / divisions);
         double endMeasure = (int) Math.ceil(current_end / divisions);
         ArrayList<Measure> display = new ArrayList<Measure>();
         for(int i = 0; i < PartInfo.notes.size(); i++) {

@@ -61,13 +61,45 @@ public class Play extends AppCompatActivity {
         final Runnable r = new Runnable() {
             @Override
             public void run() {
-                reader.current += reader.divSeconds * 0.01;
-                reader.current_end += reader.divSeconds * 0.01;
+                if(speed == 1) { // play
+                    reader.current += reader.divSeconds * 0.01;
+                    reader.current_end += reader.divSeconds * 0.01;
+                }
+                else if (speed == -3){  // back to start
+                    reader.current_end = reader.divisions * 2;
+                    reader.current = reader.divisions * -1;
+                }
+                else if (speed == -2) { // skip back 4
+                    int current_meas = (int)(reader.current / reader.divisions);
+                    reader.current = reader.divisions * (current_meas - 4);
+                    reader.current_end = reader.divisions * (current_meas - 1);
+                    speed = 0;
+                }
+                else if (speed == -1) { // back 2 measures
+                    int current_meas = (int)(reader.current / reader.divisions);
+                    reader.current = reader.divisions * (current_meas - 2);
+                    reader.current_end = reader.divisions * (current_meas + 1);
+                    speed = 0;
+                }
+                else if (speed == 2) { // forward 2
+                    int current_meas = (int)(reader.current / reader.divisions);
+                    reader.current = reader.divisions * (current_meas + 2);
+                    reader.current_end = reader.divisions * (current_meas + 5);
+                    speed = 0;
+                }
+                else if (speed == 3) { // forward 4
+                    int current_meas = (int)(reader.current / reader.divisions);
+                    reader.current = reader.divisions * (current_meas + 4);
+                    reader.current_end = reader.divisions * (current_meas + 7);
+                    speed = 0;
+                }
                 reader.invalidate();
                 handler.postDelayed(this, 100);
             }
         };
         handler.postDelayed(r, 100);
+
+
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
