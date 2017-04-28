@@ -83,6 +83,7 @@ public class Client {
         System.out.println("Sent to server: " + frankenstein.toString());
     }
 
+
     public void close() {
         try {
             socket.close();
@@ -132,37 +133,4 @@ public class Client {
         // fail("Server sent invalid JSON");
         //   }
     }
-
-
-    /**
-
-     public static JSONObject start (String name) {
-
-     JSONObject startGroup = new JSONObject();
-
-     try {
-     startGroup.put("request", "create group");
-     startGroup.put("group name", name);
-     startGroup.put("user name", "bandleader");
-     }
-     catch (JSONException e) {
-     System.out.println("Failed to make start packet");
-     }
-
-     return startGroup;
-     }
-
-
-
-     * JSON object that contains the start details
-     * @param name the name of the group
-     * @return json object formatted correctly
-     */
 }
-
-
-// example
-
-
-
-

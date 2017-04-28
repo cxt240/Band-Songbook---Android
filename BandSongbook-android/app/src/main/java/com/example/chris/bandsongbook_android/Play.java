@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -228,5 +230,39 @@ public class Play extends AppCompatActivity {
             foward.setVisibility(View.GONE);
             foward2.setVisibility(View.GONE);
         }
+    }
+
+    public JSONObject nextSong(int number) {
+        try {
+            JSONObject next = new JSONObject();
+            next.put("request", "switch song");
+            next.put("song id", number);
+            return next;
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return null;
+    }
+
+    public JSONObject playbackStart(int number, int tempo, int time) {
+        try {
+            JSONObject playback = new JSONObject();
+            playback.put("request", "begin playback");
+            playback.put("measure", number);
+            playback.put("tempo", tempo);
+            playback.put("time", time);
+            return playback;
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return null;
+    }
+
+    public JSONObject stop() {
+        try {
+            JSONObject stop = new JSONObject();
+            stop.put("request", "stop playback");
+            return stop;
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return null;
     }
 }

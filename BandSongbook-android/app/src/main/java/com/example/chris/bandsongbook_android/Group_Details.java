@@ -2,7 +2,9 @@ package com.example.chris.bandsongbook_android;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -153,5 +157,23 @@ public class Group_Details extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    public JSONObject begin() {
+        try {
+            JSONObject session = new JSONObject();
+            session.put("request", "begin session");
+            String[] songList = new String[songs.size()];
+            for(int i = 0; i < songs.size(); i++) {
+                String song = songs.get(i);
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                String xmlString = sharedPref.getString(song, "Not available");
+                songList[i] = xmlString;
+            }
+            session.put("songs", songList);
+            return session;
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return null;
     }
 }
