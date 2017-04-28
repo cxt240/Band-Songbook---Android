@@ -49,8 +49,8 @@ public class MusicPlayer extends View{
         if(PartMeasures != null) {
             lines = new double[PartMeasures.lines];
             int strings = PartMeasures.lines;
-            if(strings % 2 == 1) {
-                paint.setStrokeWidth(5);
+            if(strings % 2 == 1) {  // odd number of strings
+                paint.setStrokeWidth(7);
                 canvas.drawLine(0, height/2, width, height / 2, paint);
                 int linesAbove = (strings - 1) / 2;
                 lines[linesAbove] = (double)height / 2;
@@ -65,7 +65,7 @@ public class MusicPlayer extends View{
                     lines[linesAbove + i] = (double)(height / 2 + (100 * i));
                 }
             }
-            else {
+            else {  // even number of strings
                 paint.setStrokeWidth(7);
                 int linesAbove = strings / 2;
                 double height_above = height / 2 - 50;
@@ -95,9 +95,15 @@ public class MusicPlayer extends View{
                     double distance = measure_time - current;
                     double line = (distance / (3 * divisions));
                     int y = (int)(line * width);
+                    if (y <= width / 3) {
+                        paint.setColor(Color.GRAY);
+                    }
+                    else {
+                        paint.setColor(Color.BLUE);
+                    }
                     canvas.drawLine(y, 0, y, height, paint);
-                    Log.v("time: ", measure_time + " " + i);
-                    Log.v("size: ", " " + line + " " + distance + " ");
+//                    Log.v("time: ", measure_time + " " + i);
+//                    Log.v("size: ", " " + line + " " + distance + " ");
                 }
 
                 for(int j = 0; j < draw.notes.size(); j++) {
@@ -107,7 +113,12 @@ public class MusicPlayer extends View{
                     double distance = time - current;
                     double spot = (distance / (3 * divisions)) * (double) width;
                     Log.v("info: ", fret + " " + string + " " + time);
-                    paint.setColor(Color.BLACK);
+                    if(spot <= width / 3) {
+                        paint.setColor(Color.BLACK);
+                    }
+                    else {
+                        paint.setColor(Color.BLUE);
+                    }
                     canvas.drawText(Integer.toString(fret), (int) spot, (float)lines[string], paint);
                 }
             }
@@ -128,7 +139,6 @@ public class MusicPlayer extends View{
     public static void songChanged(String s, int PartNo, Context context) {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.v(TAG, s);
         String xmlString = sharedPref.getString(s, "Not available");
         MusicXmlParser parser = new MusicXmlParser();
         parser.parser(xmlString);

@@ -52,32 +52,32 @@ public class Files extends Fragment{
         fileList = (ListView) rootView.findViewById(R.id.file_list);
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
         fileList.setAdapter(arrayAdapter);
+        if (bandleader) {
+            fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                    final ArrayList parts = new ArrayList();
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Play Song?")
+                            .setMessage("Do you want to play this song?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent play = new Intent(getContext(), Play.class);
+                                    play.putExtra("Songs", new ArrayList<String>(filenames));
+                                    play.putExtra("Bandleader", bandleader);
+                                    play.putExtra("Play", filenames.get(position));
+                                    startActivity(play);
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+                }
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                final ArrayList parts = new ArrayList();
-                new AlertDialog.Builder(getContext())
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Play settings")
-                        .setMessage("Set the tempo and start measure")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent play = new Intent(getContext(), Play.class);
-                                play.putExtra("Songs", new ArrayList<String>(filenames));
-                                play.putExtra("Bandleader", bandleader);
-                                play.putExtra("Play", filenames.get(position));
-                                startActivity(play);
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
-            }
-
-        });
+            });
+        }
 
         addFile = (FloatingActionButton) rootView.findViewById(R.id.file);
         addFile.setOnClickListener(new View.OnClickListener() {
