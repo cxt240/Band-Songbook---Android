@@ -15,6 +15,7 @@ public class Members extends Fragment{
 
     public ListView memberList;
     public ArrayList<String> members;
+    ArrayAdapter<String> arrayAdapter;
     public boolean bandleader;
 
     public Members() {}
@@ -30,9 +31,18 @@ public class Members extends Fragment{
         bandleader = activity.bandleader;
 
         memberList = (ListView) rootView.findViewById(R.id.member_list);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, members);
+        arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, members);
         memberList.setAdapter(arrayAdapter);
 
         return rootView;
+    }
+
+    public void updateMembers(String[] list) {
+        for(int i = 0; i < list.length; i++) {
+            if(!members.contains(list[i])) {
+                members.add(list[i]);
+                arrayAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

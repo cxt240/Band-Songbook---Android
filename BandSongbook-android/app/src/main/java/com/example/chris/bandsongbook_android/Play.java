@@ -15,12 +15,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class Play extends AppCompatActivity {
 
     public List<String> files;
     public ArrayList<String> partNames;
     public boolean Bandleader = false;
+    public boolean receive;
     public int selected = 0;
     public int speed = 0;
 
@@ -38,16 +40,20 @@ public class Play extends AppCompatActivity {
     public TextView SongName;
     public String currentSong;
     public MusicPlayer reader;
+    public Client client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
+        client = SocketHolder.getClient();
+
         Bundle extras = getIntent().getExtras();
         Bandleader = extras.getBoolean("Bandleader");
         files = extras.getStringArrayList("Songs");
         currentSong = extras.getString("Play");
-
+        receive = true;
         reader = (MusicPlayer) findViewById(R.id.musicPlayer);
         SongName = (TextView) findViewById(R.id.SongName);
         SongName.setText(currentSong);
@@ -126,9 +132,29 @@ public class Play extends AppCompatActivity {
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                SongName.setText(files.get(selected));
-                                speed = 0;
-                                reader.invalidate();
+                                try {
+                                    JSONObject packet = nextSong(selected);
+                                    client.send(packet);
+                                    JSONObject recv = null;
+                                    while (recv == null &&receive) {
+                                        try {
+                                            recv = client.receiveJson();
+                                            Thread.sleep(1);
+                                            packetHandler(recv);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    try {
+                                        if (recv.has("response") && recv.getString("response").equals("ok")) {
+                                            reader.songChanged(files.get(selected), 0, getApplicationContext());
+                                            SongName.setText(files.get(selected));
+                                            speed = 0;
+                                            reader.invalidate();
+                                        }
+                                    } catch (Exception e) {e.printStackTrace();}
+                                }
+                                catch (Exception e) {e.printStackTrace();}
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -162,6 +188,7 @@ public class Play extends AppCompatActivity {
                                 }
                                 speed = 0;
                                 reader.songChanged(currentSong, part, getApplicationContext());
+
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -195,14 +222,50 @@ public class Play extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                try {
+                    receive = false;
+                    client.send(stop());
+                    JSONObject recv = null;
+                    while (recv == null) {
+                        try {
+                            recv = client.receiveJson();
+                            Thread.sleep(1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(recv.has("response") && recv.getString("response").equals("ok")) {
+                        finish();
+                    }
+                }
+                catch (Exception e) {e.printStackTrace();}
             }
         });
         play = (FloatingActionButton) findViewById(R.id.Play);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(speed == 0) {speed = 1;}
+                if(speed == 0) {
+                    receive = false;
+                    JSONObject starter = playbackStart((int) (reader.current / reader.divisions),1, 40);
+                    try {
+                        client.send(starter);
+                        JSONObject recv = null;
+                        while (recv == null) {
+                            try {
+                                recv = client.receiveJson();
+                                Thread.sleep(1);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if(recv.has("response") && recv.getString("response").equals("ok")) {
+                            speed = 1;
+                            receive = true;
+                        }
+                    }
+                    catch (Exception e) {e.printStackTrace();}
+                }
                 else {speed = 0;}
             }
         });
@@ -229,6 +292,50 @@ public class Play extends AppCompatActivity {
             play.setVisibility(View.GONE);
             foward.setVisibility(View.GONE);
             foward2.setVisibility(View.GONE);
+        }
+
+        receiver();
+    }
+
+    public void receiver() {
+        final Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                JSONObject recv = null;
+                while (recv == null &&receive) {
+                    try {
+                        recv = client.receiveJson();
+                        Thread.sleep(1);
+                        packetHandler(recv);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        handler.postDelayed(r, 10);
+    }
+
+    public void packetHandler(JSONObject packet) {
+        if(packet.has("session")) {
+            try {
+                String response = packet.getString("session");
+                if(response.equals("switch")) {
+                    int number = packet.getInt("song id");
+                    reader.songChanged(files.get(number), 0, getApplicationContext());
+                    SongName.setText(files.get(selected));
+                    speed = 0;
+                    reader.invalidate();
+                }
+                else if (response.equals("begin playback")) {
+                    speed = 1;
+                }
+                else if (response.equals("stop playback")) {
+                    finish();
+                }
+            }
+            catch (Exception e) {e.printStackTrace();}
         }
     }
 

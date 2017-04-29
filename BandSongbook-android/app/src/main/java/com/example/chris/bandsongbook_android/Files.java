@@ -18,6 +18,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +46,7 @@ public class Files extends Fragment{
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_files, container, false);
 
-        Group_Details activity = (Group_Details) getActivity();
+        final Group_Details activity = (Group_Details) getActivity();
         bandleader = activity.bandleader;
 
         filenames = activity.songs;
@@ -65,11 +67,36 @@ public class Files extends Fragment{
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent play = new Intent(getContext(), Play.class);
-                                    play.putExtra("Songs", new ArrayList<String>(filenames));
-                                    play.putExtra("Bandleader", bandleader);
-                                    play.putExtra("Play", filenames.get(position));
-                                    startActivity(play);
+                                    activity.check = false;
+                                    Client client = activity.client;
+                                    JSONObject songList = activity.begin();
+                                    try {
+                                        client.send(songList);
+                                        JSONObject recv = null;
+                                        while (recv == null) {
+                                            try {
+                                                recv = client.receiveJson();
+                                                Thread.sleep(1);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        try {
+                                            if (recv.getString("response").equals("ok")) {
+                                                Intent play = new Intent(getContext(), Play.class);
+                                                play.putExtra("Songs", new ArrayList<String>(filenames));
+                                                play.putExtra("Bandleader", bandleader);
+                                                play.putExtra("Play", filenames.get(position));
+                                                activity.check = false;
+                                                startActivity(play);
+                                            }
+                                            else {
+                                                activity.check = true;
+                                            }
+                                        }
+                                        catch (Exception e) {e.printStackTrace();}
+                                    }
+                                    catch (Exception e) {e.printStackTrace();}
                                 }
                             })
                             .setNegativeButton("No", null)
@@ -129,7 +156,6 @@ public class Files extends Fragment{
         }
     }
 
-
     private String readTextFromUri(Uri uri) throws IOException {
         InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
         BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -142,5 +168,17 @@ public class Files extends Fragment{
         reader.close();
         inputStream.close();
         return stringBuilder.toString();
+    }
+
+    public void add(String XML) {
+        MusicXmlParser parser = new MusicXmlParser();
+        parser.parser(XML);
+        filenames.add(parser.title);
+        arrayAdapter.notifyDataSetChanged();
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(parser.title, XML);
+        editor.commit();
     }
 }

@@ -70,11 +70,9 @@ public class Main extends Activity {
                         client.send(join);
 
                         JSONObject recv = null;
-                        double waitTime = 0;
                         while(recv == null)
                         {
                             recv = client.receiveJson();
-                            waitTime += 0.001;
                             Thread.sleep(1);
                         }
 
