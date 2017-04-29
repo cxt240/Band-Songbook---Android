@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+/**
+ * parser for MusicXML files
+ * @author Chris Tsuei
+ */
 public class MusicXmlParser {
 
     public static String title;
@@ -57,6 +61,12 @@ public class MusicXmlParser {
         }
     }
 
+    /**
+     * generates info for a part
+     * @param part the node (+ children) containing part information
+     * @param partNo name of the part
+     * @return PartInfo object with information on the part
+     */
     public static PartInfo getMeasureInfo(Node part, String partNo) {
         PartInfo thisPart = null;
         NodeList fields = part.getChildNodes();
@@ -144,6 +154,12 @@ public class MusicXmlParser {
         return thisPart;
     }
 
+    /**
+     * generates a measure containing the notes for a specific part
+     * @param e the list of notes (and null nodes)
+     * @param measureNumber the current measure number
+     * @return the Measure object containing notes to display
+     */
     public static Measure filterNotes(NodeList e, int measureNumber) {
         Measure current = new Measure(measureNumber);
         int chordCurrent = 0;

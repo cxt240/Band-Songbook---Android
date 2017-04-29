@@ -16,8 +16,8 @@ public class Pair implements Comparable<Pair> {
 
 	/**
 	 * overriding compareTo
-	 * @param compare
-	 * @return
+	 * @param compare the note that needs to be compared
+	 * @return int describing the relation to the other pair
 	 */
 	public int compareTo(Pair compare) {
 		return (this.time - compare.time);

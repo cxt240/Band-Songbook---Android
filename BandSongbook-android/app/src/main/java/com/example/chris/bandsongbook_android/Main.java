@@ -30,6 +30,10 @@ public class Main extends Activity {
     private boolean connected;
     public Client client;
 
+    /**
+     * Initializing everything used in the Main activity
+     * @param savedInstanceState current instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -43,6 +47,7 @@ public class Main extends Activity {
         name = (EditText) findViewById(R.id.Name);
         groupCode = (EditText) findViewById(R.id.Code);
 
+        // create group button
         Button create = (Button) findViewById(R.id.create);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,11 +58,12 @@ public class Main extends Activity {
             }
         });
 
+        // join group button
         Button group = (Button) findViewById(R.id.join);
         group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // button clicked, initialize client and get textfields
                 String group = groupCode.getText().toString();
                 String userName = name.getText().toString();
                 if(isNetworkAvailable()) {
@@ -65,7 +71,7 @@ public class Main extends Activity {
                         Client client = new Client();
                         SocketHolder.setClient(client);
 
-                        // connecting to server
+                        // connecting to server and getting responses
                         JSONObject join = join(group, userName);
                         client.send(join);
 
@@ -76,6 +82,7 @@ public class Main extends Activity {
                             Thread.sleep(1);
                         }
 
+                        // check response, if "ok", move to next activity
                         String status = recv.getString("response");
                         if(status.equals("ok")) {
                             Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
@@ -86,6 +93,7 @@ public class Main extends Activity {
                             Log.v("Group Status", "Joined");
                         }
                         else {
+                            // nonpositive response, close client, return message
                             Context context = getApplicationContext();
                             int duration = Toast.LENGTH_SHORT;
                             Toast.makeText(context, status, duration);
@@ -143,6 +151,9 @@ public class Main extends Activity {
         return joinGroup;
     }
 
+    /**
+     * test method used to test the receiver
+     */
     public static void test()
     {
         try {

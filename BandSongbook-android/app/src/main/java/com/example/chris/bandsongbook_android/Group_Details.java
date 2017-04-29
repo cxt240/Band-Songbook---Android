@@ -23,6 +23,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Group details (files and members)
+ * @author Chris Tsuei
+ */
 public class Group_Details extends AppCompatActivity {
 
     public String GroupName;
@@ -49,6 +53,10 @@ public class Group_Details extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    /**
+     * instantiating the activity
+     * @param savedInstanceState current activity instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +71,12 @@ public class Group_Details extends AppCompatActivity {
         GroupName = field.getString("Group Name");
         bandleader = field.getBoolean("Bandleader");
         check = true;
-        if(bandleader) {
+        if(bandleader) { // bandleader, information already exists
             songs = field.getStringArrayList("Songs");
             members = new ArrayList<String>();
             members.add("Bandleader");
         }
-        else  {
+        else  { // joining the group
             songs = new ArrayList<String>();
             members = new ArrayList<String>();
             members.add("Bandleader");
@@ -76,6 +84,7 @@ public class Group_Details extends AppCompatActivity {
         }
         setContentView(R.layout.activity_group__details);
 
+        // title for the activity
         getSupportActionBar().setTitle("Group " + GroupName + " Details");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -88,6 +97,7 @@ public class Group_Details extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        // receiver for this activity
         final Handler handler = new Handler();
         final Runnable r = new Runnable() {
             @Override
@@ -110,7 +120,10 @@ public class Group_Details extends AppCompatActivity {
         handler.postDelayed(r, 10);
     }
 
-
+    /**
+     * creates the C3 packet
+     * @return the C3 packet
+     */
     public JSONObject begin() {
         try {
             JSONObject session = new JSONObject();
@@ -129,9 +142,13 @@ public class Group_Details extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * handles packet responses
+     * @param packet the packet to handle
+     */
     public void packetHandler(JSONObject packet) {
         try {
-            if (packet.has("group members")) {
+            if (packet.has("group members")) { // S1 packet
                 JSONArray output = packet.getJSONArray("group members");
                 String[] memberList = new String[output.length()];
                 for(int i = 0; i < output.length(); i++) {
@@ -141,7 +158,7 @@ public class Group_Details extends AppCompatActivity {
             }
             else if(packet.has("session")) {
                 String outcome = packet.getString("session");
-                if(outcome.equals("start")) {
+                if(outcome.equals("start")) { // S3 packet
                     JSONArray output = packet.getJSONArray("songs");
                     for(int i = 0; i < output.length(); i++) {
                         String XMLString = output.getString(i);
@@ -151,14 +168,14 @@ public class Group_Details extends AppCompatActivity {
                             fileFrag.add(XMLString);
                         }
                     }
-                    check = false;
+                    check = false; // turn off receiver and begin new activity
                     Intent play = new Intent(this, Play.class);
                     play.putExtra("Songs", songs);
                     play.putExtra("Bandleader", bandleader);
                     play.putExtra("Play", songs.get(0));
                     startActivity(play);
                 }
-                else if (outcome.equals("end")) {
+                else if (outcome.equals("end")) { // S2 packet, close activity and client receiver
                     client.close();
                     finish();
                 }
@@ -166,6 +183,7 @@ public class Group_Details extends AppCompatActivity {
         }
         catch (Exception e) {e.printStackTrace();}
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -189,6 +207,9 @@ public class Group_Details extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * if the back button was pressed, close activity and close client
+     */
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -249,6 +270,9 @@ public class Group_Details extends AppCompatActivity {
         }
     }
 
+    /**
+     * if the activity was resumed, flip the receiver back on
+     */
     @Override
     protected void onResume() {
         super.onResume();

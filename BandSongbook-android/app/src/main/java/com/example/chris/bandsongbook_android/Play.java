@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Activity to display the MusicXMl file
+ * @author Chris Tsuei
+ */
 public class Play extends AppCompatActivity {
 
     public List<String> files;
@@ -43,6 +47,10 @@ public class Play extends AppCompatActivity {
     public MusicPlayer reader;
     public Client client;
 
+    /**
+     * initializing all fields for this instance of the activity
+     * @param savedInstanceState current instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +60,8 @@ public class Play extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        // getting all initial fields and setting global variables
         client = SocketHolder.getClient();
-
         Bundle extras = getIntent().getExtras();
         Bandleader = extras.getBoolean("Bandleader");
         files = extras.getStringArrayList("Songs");
@@ -70,6 +78,7 @@ public class Play extends AppCompatActivity {
         reader.songChanged(currentSong, 0, getApplicationContext());
         partNames = read.partNames;
 
+        // handler to take care of the bottom row of buttons (specifically their responses)
         final Handler handler = new Handler();
         final Runnable r = new Runnable() {
             @Override
@@ -112,7 +121,7 @@ public class Play extends AppCompatActivity {
         };
         handler.postDelayed(r, 100);
 
-
+        // song button (change song)
         songs = (Button) findViewById(R.id.songs);
         songs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +147,7 @@ public class Play extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
+                                    receive = false;
                                     JSONObject packet = nextSong(selected);
                                     client.send(packet);
                                     JSONObject recv = null;
@@ -158,6 +168,7 @@ public class Play extends AppCompatActivity {
                                             reader.invalidate();
                                         }
                                     } catch (Exception e) {e.printStackTrace();}
+                                    receive = true;
                                 }
                                 catch (Exception e) {e.printStackTrace();}
                             }
@@ -167,6 +178,7 @@ public class Play extends AppCompatActivity {
             }
         });
 
+        // change part button
         options = (Button) findViewById(R.id.options);
         options.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,6 +214,7 @@ public class Play extends AppCompatActivity {
             }
         });
 
+        // bottom row of buttons
         previous = (FloatingActionButton) findViewById(R.id.previous);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +239,7 @@ public class Play extends AppCompatActivity {
         stop = (FloatingActionButton) findViewById(R.id.stop);
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) { // stop button, closes activity if the response is "ok"
                 try {
                     receive = false;
                     client.send(stop());
@@ -246,6 +259,8 @@ public class Play extends AppCompatActivity {
                 catch (Exception e) {e.printStackTrace();}
             }
         });
+
+        // play button for if the bandleader wishes to start the session playback
         play = (FloatingActionButton) findViewById(R.id.Play);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,6 +304,7 @@ public class Play extends AppCompatActivity {
             }
         });
 
+        // no access for buttons if the user isn't the bandleader
         if(!Bandleader) {
             previous.setVisibility(View.GONE);
             rewind.setVisibility(View.GONE);
@@ -299,9 +315,13 @@ public class Play extends AppCompatActivity {
             foward2.setVisibility(View.GONE);
         }
 
+        // initializes the recevier for this activity
         receiver();
     }
 
+    /**
+     * handles all packets that need to be received (outside of the packets where we expect reponses)
+     */
     public void receiver() {
         final Handler handler = new Handler();
         final Runnable r = new Runnable() {
@@ -322,21 +342,25 @@ public class Play extends AppCompatActivity {
         handler.postDelayed(r, 10);
     }
 
+    /**
+     * handles any packets received by the receiver method
+     * @param packet the packet to be handled
+     */
     public void packetHandler(JSONObject packet) {
         if(packet.has("session")) {
-            try {
+            try { // S4 packet
                 String response = packet.getString("session");
-                if(response.equals("switch")) {
+                if(response.equals("switch")) { // S4 packet
                     int number = packet.getInt("song id");
                     reader.songChanged(files.get(number), 0, getApplicationContext());
                     SongName.setText(files.get(selected));
                     speed = 0;
                     reader.invalidate();
                 }
-                else if (response.equals("begin playback")) {
+                else if (response.equals("begin playback")) { // S5 packet
                     speed = 1;
                 }
-                else if (response.equals("stop playback")) {
+                else if (response.equals("stop playback")) { // S6 packet
                     finish();
                 }
             }
@@ -344,6 +368,11 @@ public class Play extends AppCompatActivity {
         }
     }
 
+    /**
+     * C4 packet generator
+     * @param number the song index of the song to be played
+     * @return the C4 packet
+     */
     public JSONObject nextSong(int number) {
         try {
             JSONObject next = new JSONObject();
@@ -355,6 +384,13 @@ public class Play extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * C5 packet generator
+     * @param number the measure number
+     * @param tempo tempo to be played back
+     * @param time until playback starts
+     * @return C5 packet
+     */
     public JSONObject playbackStart(int number, int tempo, int time) {
         try {
             JSONObject playback = new JSONObject();
@@ -368,6 +404,10 @@ public class Play extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * C6 packet generator
+     * @return C6 packet
+     */
     public JSONObject stop() {
         try {
             JSONObject stop = new JSONObject();
