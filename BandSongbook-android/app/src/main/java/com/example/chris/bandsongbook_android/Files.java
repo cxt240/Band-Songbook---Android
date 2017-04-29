@@ -29,6 +29,10 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Files fragment listing all filenames
+ * @author Chris Tsuei
+ */
 public class Files extends Fragment{
 
     private ListView fileList;
@@ -38,8 +42,19 @@ public class Files extends Fragment{
 
     private static final int READ_REQUEST_CODE = 42;
     public FloatingActionButton addFile;
+
+    /**
+     * empty constructor for the file class
+     */
     public Files() {}
 
+    /**
+     * instantiation of the file view
+     * @param inflater what the fragment is displayed in
+     * @param container where the fragment is to be displayed
+     * @param savedInstanceState current instance of the fragment
+     * @return what the fragment should look like
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +69,7 @@ public class Files extends Fragment{
         fileList = (ListView) rootView.findViewById(R.id.file_list);
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, filenames);
         fileList.setAdapter(arrayAdapter);
-        if (bandleader) {
+        if (bandleader) { // allows the bandleader to start a session
             fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
@@ -82,12 +97,12 @@ public class Files extends Fragment{
                                             }
                                         }
                                         try {
-                                            if (recv.getString("response").equals("ok")) {
+                                            if (recv.getString("response").equals("ok")) { // positive response
                                                 Intent play = new Intent(getContext(), Play.class);
                                                 play.putExtra("Songs", new ArrayList<String>(filenames));
                                                 play.putExtra("Bandleader", bandleader);
                                                 play.putExtra("Play", filenames.get(position));
-                                                activity.check = false;
+                                                activity.check = false; // turns off receiver on Group Details
                                                 startActivity(play);
                                             }
                                             else {
@@ -129,6 +144,12 @@ public class Files extends Fragment{
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
+    /**
+     * result from the filechooser
+     * @param requestCode requestCode that initialized fileChooser
+     * @param resultCode whether the result was sucessful
+     * @param resultData data containing the result (in our case it's the xml file as a URI)
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
@@ -156,6 +177,12 @@ public class Files extends Fragment{
         }
     }
 
+    /**
+     * reads the URI
+     * @param uri URI result to be parsed
+     * @return XML string
+     * @throws IOException invalid URI
+     */
     private String readTextFromUri(Uri uri) throws IOException {
         InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
         BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -170,6 +197,10 @@ public class Files extends Fragment{
         return stringBuilder.toString();
     }
 
+    /**
+     * attempts to add an XML string to the file list
+     * @param XML XMLfile to be added
+     */
     public void add(String XML) {
         MusicXmlParser parser = new MusicXmlParser();
         parser.parser(XML);

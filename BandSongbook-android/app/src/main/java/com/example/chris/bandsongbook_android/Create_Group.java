@@ -29,6 +29,10 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Create group activity
+ * @author Chris Tsuei
+ */
 public class Create_Group extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 42;
@@ -36,6 +40,10 @@ public class Create_Group extends AppCompatActivity {
     private ArrayList<String> songs;
     public Client client;
 
+    /**
+     * instantiation of the activity
+     * @param savedInstanceState current instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,6 +57,7 @@ public class Create_Group extends AppCompatActivity {
         songs = new ArrayList<String>();
         groupName = (EditText) findViewById(R.id.group_name);
 
+        // create group button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +83,7 @@ public class Create_Group extends AppCompatActivity {
                             Thread.sleep(1);
                         }
                         String status = recv.getString("response");
-                        if(status.equals("ok")) {
+                        if(status.equals("ok")) { // positive response, goto next activity
 
                             // create intent and add params to bundle
                             Intent nextScreen = new Intent(getApplicationContext(), Group_Details.class);
@@ -86,7 +95,7 @@ public class Create_Group extends AppCompatActivity {
                             startActivity(nextScreen);
                             Log.v("Group Status", "Created");
                         }
-                        else {
+                        else { // negative or irrelavant response, close current client
                             Log.v("Group", "Failed Join");
                             Context context = getApplicationContext();
                             int duration = Toast.LENGTH_SHORT;
@@ -107,6 +116,7 @@ public class Create_Group extends AppCompatActivity {
             }
         });
 
+        // allows for the adding of a file to the group
         Button addFile = (Button) findViewById(R.id.addFile);
         addFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +130,12 @@ public class Create_Group extends AppCompatActivity {
         });
     }
 
+    /**
+     * result from the filechooser
+     * @param requestCode requestCode that initialized fileChooser
+     * @param resultCode whether the result was sucessful
+     * @param resultData data containing the result (in our case it's the xml file as a URI)
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.v(TAG, requestCode + " " + resultCode + " " + resultData.getData().toString());
@@ -145,6 +161,12 @@ public class Create_Group extends AppCompatActivity {
         }
     }
 
+    /**
+     * reads the URI
+     * @param uri URI result to be parsed
+     * @return XML string
+     * @throws IOException invalid URI
+     */
     private String readTextFromUri(Uri uri) throws IOException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         BufferedReader reader = new BufferedReader(new InputStreamReader(
