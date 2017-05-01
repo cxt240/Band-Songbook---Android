@@ -316,7 +316,7 @@ public class Play extends AppCompatActivity {
         }
 
         // initializes the recevier for this activity
-        receiver();
+       // receiver();
     }
 
     /**

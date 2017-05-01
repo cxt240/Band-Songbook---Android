@@ -12,6 +12,7 @@ public class Pair implements Comparable<Pair> {
 	public Pair(int string, int fret, int time) {
 		this.string = string;
 		this.fret = fret;
+		this.time = time;
 	}
 
 	/**

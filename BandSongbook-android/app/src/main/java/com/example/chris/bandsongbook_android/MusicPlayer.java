@@ -117,11 +117,13 @@ public class MusicPlayer extends View{
                 }
 
                 for(int j = 0; j < draw.notes.size(); j++) { // drawing the notes to the screen
-                    double time = measure_time + draw.notes.get(j).time;
+                    double time = measure_time + (double) draw.notes.get(j).time;
                     int string = draw.notes.get(j).string;
                     int fret = draw.notes.get(j).fret;
                     double distance = time - current;
                     double spot = (distance / (3 * divisions)) * (double) width;
+                    Log.v("measureSize ", draw.number + " " + draw.notes.size() + " ");
+                    Log.v("time ", " " + draw.notes.get(j).time);
                     Log.v("info: ", fret + " " + string + " " + time);
                     if(spot <= width / 3) { // change color if behind play bar
                         paint.setColor(Color.BLACK);

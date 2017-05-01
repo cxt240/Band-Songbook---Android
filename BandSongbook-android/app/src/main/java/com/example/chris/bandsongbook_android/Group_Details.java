@@ -97,27 +97,27 @@ public class Group_Details extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // receiver for this activity
-        final Handler handler = new Handler();
-        final Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                if(check) {
-                    JSONObject recv = null;
-                    while (recv == null && check) {
-                        try {
-                            recv = client.receiveJson();
-                            Thread.sleep(1);
-                            packetHandler(recv);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-            }
-        };
-        handler.postDelayed(r, 10);
+//        // receiver for this activity
+//        final Handler handler = new Handler();
+//        final Runnable r = new Runnable() {
+//            @Override
+//            public void run() {
+//                if(check) {
+//                    JSONObject recv = null;
+//                    while (recv == null && check) {
+//                        try {
+//                            recv = client.receiveJson();
+//                            Thread.sleep(1);
+//                            packetHandler(recv);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//
+//            }
+//        };
+//        handler.postDelayed(r, 10);
     }
 
     /**
